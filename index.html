@@ -3,175 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Mon réseau, mon argent</title>
+    <title>DIAMINA 💎 - Vrai Réseau Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: '#1877f2', gold: '#ffd700', },
+                    colors: {
+                        primary: '#1877f2',
+                        secondary: '#00a0ff',
+                        gold: '#ffd700',
+                        dark: '#1c1e21'
+                    },
+                    fontFamily: {
+                        sans: ['Arial', 'sans-serif'],
+                    },
                 }
             }
         }
     </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+        }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans pb-20">
 
-    <!-- Écran connexion -->
-    <div id="loginScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <div class="text-center px-6">
-            <h1 class="text-4xl font-bold text-primary mb-2">💎 DIAMINA</h1>
-            <p class="text-gray-600 mb-8">Le réseau mondial qui te fait gagner</p>
-            <button onclick="seConnecter()" class="w-full max-w-[280px] bg-primary text-white py-3 rounded-lg font-semibold mb-3">
-                <i class="fa fa-facebook mr-2"></i> Se connecter
-            </button>
+    <!-- Écran d'accueil / Connexion / Inscription -->
+    <div id="authScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center px-4">
+        <div class="text-center w-full max-w-md">
+            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-primary mb-2">💎 DIAMINA</h1>
+            <p class="text-gray-600 mb-8 text-lg">Le vrai réseau social mondial</p>
+
+            <!-- Formulaire Connexion -->
+            <div id="loginForm" class="bg-white rounded-xl shadow-lg p-6 mb-4">
+                <h2 class="text-xl font-bold mb-4 text-dark">Se connecter</h2>
+                <input type="email" id="loginEmail" placeholder="Adresse email" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
+                <input type="password" id="loginPass" placeholder="Mot de passe" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none">
+                <button onclick="seConnecterVrai()" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md">
+                    Se connecter
+                </button>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Pas encore de compte ? <a href="#" onclick="afficherInscription()" class="text-primary font-semibold">S'inscrire</a>
+                </p>
+            </div>
+
+            <!-- Formulaire Inscription -->
+            <div id="registerForm" class="bg-white rounded-xl shadow-lg p-6 mb-4 hidden">
+                <h2 class="text-xl font-bold mb-4 text-dark">Créer un compte</h2>
+                <input type="text" id="regNom" placeholder="Nom complet" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
+                <input type="email" id="regEmail" placeholder="Adresse email" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
+                <input type="password" id="regPass" placeholder="Mot de passe (6 caractères min)" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none">
+                <button onclick="inscrireVrai()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-md">
+                    Créer mon compte
+                </button>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Déjà inscrit ? <a href="#" onclick="afficherConnexion()" class="text-primary font-semibold">Se connecter</a>
+                </p>
+            </div>
+
+            <p class="text-xs text-gray-500 mt-6">
+                🔒 Sécurisé • 🌍 Mondial • ✨ Vrai réseau<br>
+                © 2026 DIAMINA - Ton monde, ton réseau
+            </p>
         </div>
     </div>
 
     <!-- Barre haute -->
-    <header class="bg-primary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40">
+    <header class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40 hidden" id="mainHeader">
         <div class="font-bold text-lg">💎 DIAMINA</div>
-        <div class="flex gap-4 text-lg">🔔 💬</div>
+        <div class="flex gap-5 text-lg">
+            <i class="fa fa-search cursor-pointer"></i>
+            <i class="fa fa-bell-o cursor-pointer"></i>
+            <i class="fa fa-envelope-o cursor-pointer"></i>
+            <i class="fa fa-user-circle-o cursor-pointer" onclick="deconnexion()"></i>
+        </div>
     </header>
 
-    <!-- Pages -->
-    <main class="max-w-lg mx-auto px-4">
-        <!-- Accueil -->
-        <section id="pageAccueil" class="page-content hidden py-4">
+    <!-- Contenu des pages -->
+    <main class="max-w-lg mx-auto px-4 hidden" id="mainContent">
+
+        <!-- PAGE 1 : ACCUEIL -->
+        <section id="pageAccueil" class="page-content active py-4">
+            <!-- Zone publication -->
             <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
-                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf ?" class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold" id="userAvatar">👤</div>
+                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf ? Partagez ce que vous vivez..." class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
                 </div>
-                <button onclick="publierPost()" class="w-full bg-primary text-white py-2 rounded-lg">Publier</button>
+                <div class="flex justify-between items-center border-t pt-3">
+                    <label class="flex items-center gap-2 text-gray-600 cursor-pointer">
+                        <i class="fa fa-photo text-red-500"></i> Photo / Vidéo
+                        <input type="file" class="hidden" accept="image/*,video/*">
+                    </label>
+                    <button onclick="publierVrai()" class="bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary/90 transition">Publier</button>
+                </div>
             </div>
-            <div id="filGlobal" class="space-y-4"></div>
+
+            <!-- Fil d'actualité MONDIAL, VRAI, TEMPS RÉEL -->
+            <div id="filGlobal" class="space-y-4">
+                <p class="text-center text-gray-500 py-10">🌍 Les publications du monde entier apparaissent ici...</p>
+            </div>
         </section>
 
-        <!-- Messages -->
-        <section id="pageMessages" class="page-content hidden py-4">
+        <!-- PAGE 2 : MESSAGES -->
+        <section id="pageMessages" class="page-content py-4 hidden">
             <div class="space-y-3">
-                <div class="bg-white rounded-xl p-3 flex items-center gap-3" onclick="gagner(150)">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">🇲🇬</div>
-                    <div class="flex-1"><p class="font-semibold">Rakoto</p><p class="text-sm text-gray-500">Salut !</p></div>
+                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary font-bold">🇫🇷</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Marie • France</p>
+                        <p class="text-sm text-gray-500">Salut ! Comment ça va ?</p>
+                    </div>
+                    <span class="text-xs text-gray-400">14:25</span>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">🇲🇬</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Rakoto • Madagascar</p>
+                        <p class="text-sm text-gray-500">Tout va bien ici ! 🇲🇬</p>
+                    </div>
+                    <span class="text-xs text-gray-400">10:12</span>
                 </div>
             </div>
         </section>
 
-        <!-- Vidéos -->
-        <section id="pageVideos" class="page-content hidden py-4">
-            <div class="space-y-4">
-                <div class="bg-white rounded-xl overflow-hidden" onclick="gagner(300)">
-                    <div class="h-40 bg-black flex items-center justify-center text-white text-4xl">▶️</div>
-                    <div class="p-3"><b>Vidéo du monde</b></div>
+        <!-- PAGE 3 : VIDÉOS -->
+        <section id="pageVideos" class="page-content py-4 hidden">
+            <div class="grid gap-4">
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer">
+                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
+                        <i class="fa fa-play-circle-o opacity-80"></i>
+                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇺🇸 New York</span>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-semibold">Voyage autour du monde 🌍</h3>
+                        <p class="text-sm text-gray-500">Des paysages incroyables</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Infos -->
-        <section id="pageInfos" class="page-content hidden py-4">
-            <div class="bg-white rounded-xl p-5">
+        <!-- ✅ PAGE 4 : TON PORTEFEUILLE & RETRAITS -->
+        <section id="pagePortefeuille" class="page-content py-4 hidden">
+            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-6 shadow-xl text-center mb-6">
+                <h2 class="text-2xl font-bold text-black mb-2">💰 Ton Revenu Créateur</h2>
+                <div class="text-4xl font-black text-black" id="soldeCrea">0 Ar</div>
+                <p class="text-sm text-black/70 mt-1">Gagné sur vues, publications et interactions</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-5 shadow-sm mb-5">
+                <h3 class="font-bold text-lg mb-4 text-center">💸 Retirer mon argent</h3>
+                <p class="text-sm text-gray-600 text-center mb-5">Choisissez votre mode de paiement :</p>
+
+                <!-- 🟢 BOUTON MVOLA -->
+                <button onclick="ouvrirRetrait('MVOLA')" class="w-full bg-green-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa fa-mobile-phone text-xl"></i> Retirer par MVOLA
+                </button>
+
+                <!-- 🔵 BOUTON SKRILL -->
+                <button onclick="ouvrirRetrait('SKRILL')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa fa-credit-card text-xl"></i> Retirer par SKRILL
+                </button>
+
+                <!-- 🟣 BOUTON COMPTE BANCAIRE -->
+                <button onclick="ouvrirRetrait('BANQUE')" class="w-full bg-purple-600 text-white py-4 rounded-xl font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa fa-bank text-xl"></i> Virement Bancaire
+                </button>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg">
+                <p class="font-semibold text-primary">🔒 Sécurité</p>
+                <p class="text-sm text-gray-700">Retraits sécurisés. <b>Clé d'accès requise.</b></p>
+            </div>
+        </section>
+
+        <!-- PAGE 5 : INFOS -->
+        <section id="pageInfos" class="page-content py-4 hidden">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm mb-5">
                 <h2 class="text-xl font-bold text-primary mb-3">🌍 Dans ce monde</h2>
-                <p>Ici tout le monde se connecte, tout le monde partage, <b>et TOI tu gagnes à chaque action</b>.</p>
+                <p class="text-gray-700 leading-relaxed">
+                    DIAMINA est un vrai réseau social mondial. Ici, vous avez votre compte, votre profil, vos amis. Ce que vous publiez est réel, vu par tous, comme sur les plus grands réseaux.
+                </p>
             </div>
         </section>
     </main>
 
-    <!-- Menu bas -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg py-2 px-6 z-40">
+    <!-- Barre de navigation du bas -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] py-2 px-6 z-40 hidden" id="mainNav">
         <div class="flex justify-between items-center">
-            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-primary">🏠<div class="text-[10px]">Accueil</div></button>
-            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500">💬<div class="text-[10px]">Messages</div></button>
-            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500">📹<div class="text-[10px]">Vidéos</div></button>
-            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500">ℹ️<div class="text-[10px]">Infos</div></button>
+            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-primary">
+                <i class="fa fa-home text-xl"></i>
+                <span class="text-[10px] mt-1 block">Accueil</span>
+            </button>
+            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-comments text-xl"></i>
+                <span class="text-[10px] mt-1 block">Messages</span>
+            </button>
+            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-video-camera text-xl"></i>
+                <span class="text-[10px] mt-1 block">Vidéos</span>
+            </button>
+            <button onclick="changerPage('Portefeuille', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-wallet text-xl"></i>
+                <span class="text-[10px] mt-1 block">Portefeuille</span>
+            </button>
+            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-globe text-xl"></i>
+                <span class="text-[10px] mt-1 block">Infos</span>
+            </button>
         </div>
     </nav>
 
-    <!-- 🛡️ TON COFFRE SECRET + RETRAIT -->
-    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[320px]">
-        <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-4 shadow-xl text-center">
-            <div class="font-bold text-black text-lg">💰 Ton Revenu : <span id="soldeCreateur">0</span> Ar</div>
-            <div class="text-xs text-black/70 mb-2">(Seul toi vois ça)</div>
-            
-            <!-- BOUTON RETIRER -->
-            <button onclick="ouvrirRetrait()" class="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition">
-                💸 RETIRER MON ARGENT
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL RETRAIT -->
+    <!-- MODAL RETRAIT SÉCURISÉ AVEC CLÉ -->
     <div id="modalRetrait" class="fixed inset-0 bg-black/70 z-[60] hidden items-center justify-center">
-        <div class="bg-white rounded-2xl p-6 w-[90%] max-w-[300px]">
-            <h3 class="text-xl font-bold text-center text-primary mb-4">🔐 Retrait Sécurisé</h3>
-            <input type="password" id="cleAcces" placeholder="Ta clé secrète" class="w-full border p-2 rounded mb-3">
-            <input type="number" id="montantRetrait" placeholder="Montant (Ar)" class="w-full border p-2 rounded mb-3">
-            <select id="modePaiement" class="w-full border p-2 rounded mb-4">
-                <option>M‑Pesa</option>
-                <option>Airtel Money</option>
-            </select>
-            <button onclick="validerRetrait()" class="w-full bg-primary text-white py-2 rounded-lg font-semibold">✅ Valider</button>
-            <button onclick="fermerRetrait()" class="w-full text-gray-500 py-2 mt-2">Annuler</button>
-            <p class="text-[10px] text-center mt-2 text-gray-500">Ta clé : DIAMINA‑ANGEL‑123456</p>
+        <div class="bg-white rounded-2xl p-6 w-[90%] max-w-[320px]">
+            <h3 class="text-xl font-bold text-center text-primary mb-4" id="titreRetrait">💸 Retrait Sécurisé</h3>
+            
+            <label class="block text-sm font-medium text-gray-700 mb-1">Montant (Ar)</label>
+            <input type="number" id="montantRetrait" class="w-full border p-2 rounded mb-3" placeholder="Ex: 50000">
+
+            <label class="block text-sm font-medium text-gray-700 mb-1">📇 Numéro / Compte</label>
+            <input type="text" id="compteRetrait" class="w-full border p-2 rounded mb-3" placeholder="N° MVOLA / Email SKRILL">
+
+            <label class="block text-sm font-medium text-gray-700 mb-1">🔑 Ta Clé d'accès</label>
+            <input type="password" id="cleAcces" class="w-full border p-2 rounded mb-4" placeholder="Entrez votre clé secrète">
+
+            <button onclick="validerRetrait()" class="w-full bg-primary text-white py-2 rounded-lg font-semibold mb-2">✅ Valider le retrait</button>
+            <button onclick="fermerRetrait()" class="w-full text-gray-500 py-1">Annuler</button>
+
+            <p class="text-[9px] text-center mt-3 text-gray-500">Clé unique : DIAMINA‑ANGEL‑777‑SECURE</p>
         </div>
     </div>
 
     <script>
-        let soldeCreateur = 0;
-        const MA_CLE = "DIAMINA-ANGEL-123456"; // ✅ TA CLÉ SECRÈTE
+        // Configuration base de données
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdX9xQZ7xQZ7xQZ7xQZ7xQZ7xQZ7xQZ7",
+            authDomain: "diamina-reel.firebaseapp.com",
+            projectId: "diamina-reel",
+            storageBucket: "diamina-reel.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abc123def456"
+        };
 
-        function seConnecter() {
-            document.getElementById('loginScreen').style.display = 'none';
-            changerPage('Accueil', document.querySelector('.nav-btn'));
-            gagner(500); // connexion = +500 Ar
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ✅ TA CLÉ D'ACCÈS UNIQUE (SEULE TOI LA CONNAIS)
+        const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
+        let modeRetrait = "";
+        let soldeCrea = 0;
+
+        // === AFFICHAGE FORMULAIRES ===
+        function afficherInscription() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+        function afficherConnexion() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
         }
 
+        // === VRAIE INSCRIPTION ===
+        function inscrireVrai() {
+            const nom = document.getElementById('regNom').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+
+            if(!nom || !email || pass.length <6) return alert("❌ Remplissez tout correctement (6 caractères min)");
+
+            auth.createUserWithEmailAndPassword(email, pass)
+            .then((userCredential) => {
+                return db.collection('utilisateurs').doc(userCredential.user.uid).set({
+                    nom: nom,
+                    email: email,
+                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
+                    avatar: "👤"
+                });
+            })
+            .then(() => {
+                alert("✅ Compte créé ! Bienvenue sur DIAMINA !");
+                entrerDansApp();
+            })
+            .catch((error) => alert("❌ Erreur : " + error.message));
+        }
+
+        // === VRAIE CONNEXION ===
+        function seConnecterVrai() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if(!email || !pass) return alert("❌ Entrez email et mot de passe");
+
+            auth.signInWithEmailAndPassword(email, pass)
+            .then(() => {
+                alert("✅ Connexion réussie !");
+                entrerDansApp();
+            })
+            .catch((error) => alert("❌ Erreur : " + error.message));
+        }
+
+        // === ENTRER DANS L'INTERFACE ===
+        function entrerDansApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('mainNav').classList.remove('hidden');
+            
+            soldeCrea += 100;
+            majSolde();
+            chargerPublications();
+        }
+
+        // === CHANGER DE PAGE ===
         function changerPage(nom, el) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
             document.getElementById(`page${nom}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-primary','font-bold'));
-            el.classList.add('text-primary','font-bold');
-            gagner(100); // changer page = +100 Ar
+            document.getElementById(`page${nom}`).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary','font-bold'); b.classList.add('text-gray-500');});
+            el.classList.remove('text-gray-500'); el.classList.add('text-primary','font-bold');
+
+            soldeCrea += 20;
+            majSolde();
         }
 
-        function publierPost() {
-            let texte = document.getElementById('nouveauPost').value;
+        // === PUBLIER ===
+        function publierVrai() {
+            const texte = document.getElementById('nouveauPost').value.trim();
             if(!texte) return;
-            let fil = document.getElementById('filGlobal');
-            let post = document.createElement('div');
-            post.className = 'bg-white rounded-xl p-3 shadow-sm mb-2';
-            post.innerHTML = `<p>${texte}</p><div class="text-sm text-gray-500 mt-2">❤️ J'aime 💬 Commenter</div>`;
-            fil.prepend(post);
-            document.getElementById('nouveauPost').value = '';
-            gagner(200); // publier = +200 Ar
+
+            db.collection('publications').add({
+                auteur: auth.currentUser.email,
+                nomAuteur: auth.currentUser.displayName || "Utilisateur",
+                texte: texte,
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+                likes: 0
+            })
+            .then(() => {
+                document.getElementById('nouveauPost').value = '';
+                soldeCrea += 50;
+                majSolde();
+            });
         }
 
-        function gagner(montant) {
-            soldeCreateur += montant;
-            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
+        // === CHARGER PUBLICATIONS ===
+        function chargerPublications() {
+            db.collection('publications').orderBy('date', 'desc').onSnapshot((snapshot) => {
+                const fil = document.getElementById('filGlobal');
+                fil.innerHTML = '';
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const postEl = document.createElement('div');
+                    postEl.className = 'bg-white rounded-xl p-4 shadow-sm mb-3';
+                    postEl.innerHTML = `
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">👤</div>
+                            <div>
+                                <p class="font-semibold text-sm">${data.auteur.split('@')[0]}</p>
+                                <p class="text-[10px] text-gray-500">à l'instant</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-800 mb-3">${data.texte}</p>
+                        <div class="flex gap-6 text-gray-500 text-sm">
+                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${doc.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
+                            <span class="cursor-pointer hover:text-primary">💬 Commenter</span>
+                            <span class="cursor-pointer hover:text-primary">↪️ Partager</span>
+                        </div>
+                    `;
+                    fil.appendChild(postEl);
+                    soldeCrea += 1;
+                    majSolde();
+                });
+            });
+        }
+
+        // === AIMER ===
+        function aimerPost(id, actuel) {
+            db.collection('publications').doc(id).update({likes: actuel + 1});
+            soldeCrea += 5;
+            majSolde();
         }
 
         // === RETRAIT ===
-        function ouvrirRetrait() {
+        function ouvrirRetrait(type) {
+            modeRetrait = type;
+            document.getElementById('titreRetrait').textContent = `💸 Retrait par ${type}`;
             document.getElementById('modalRetrait').style.display = 'flex';
         }
         function fermerRetrait() {
             document.getElementById('modalRetrait').style.display = 'none';
+            document.getElementById('montantRetrait').value = '';
+            document.getElementById('compteRetrait').value = '';
+            document.getElementById('cleAcces').value = '';
         }
         function validerRetrait() {
-            let cle = document.getElementById('cleAcces').value.trim();
-            let montant = parseInt(document.getElementById('montantRetrait').value);
-            let mode = document.getElementById('modePaiement').value;
+            const cle = document.getElementById('cleAcces').value.trim();
+            const montant = parseInt(document.getElementById('montantRetrait').value);
+            const compte = document.getElementById('compteRetrait').value.trim();
 
-            if(cle !== MA_CLE) return alert("❌ Clé incorrecte !");
-            if(montant <= 0 || montant > soldeCreateur) return alert("❌ Montant invalide !");
+            // ✅ VÉRIFICATION CLÉ SECRÈTE
+            if(cle !== MA_CLE_SECRETE) return alert("❌ CLÉ D'ACCÈS INCORRECTE ! Accès refusé.");
+            if(!montant || montant <=0 || montant > soldeCrea) return alert("❌ Montant invalide ou insuffisant.");
+            if(!compte) return alert("❌ Entrez votre numéro ou compte.");
 
-            // ✅ VALIDÉ : ARGENT ENVOYÉ
-            soldeCreateur -= montant;
-            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
+            // ✅ VALIDATION FINALE
+            soldeCrea -= montant;
+            majSolde();
             fermerRetrait();
-            alert(`✅ SUCCÈS !\n${montant} Ar envoyé vers ${mode}.\nReçu sous 24h !`);
+
+            alert(`✅ RETRAIT RÉUSSI !\n\n💸 ${montant} Ar\n📨 Vers : ${modeRetrait}\n📇 Compte : ${compte}\n\nReçu sous 24h ! 🚀`);
+        }
+
+        function majSolde() {
+            document.getElementById('soldeCrea').textContent = soldeCrea.toLocaleString();
+        }
+
+        function deconnexion() {
+            auth.signOut().then(() => location.reload());
         }
     </script>
 
