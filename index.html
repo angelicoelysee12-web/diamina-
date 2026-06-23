@@ -6,37 +6,101 @@
     <title>DIAMINA 💎 - Ton monde, ton argent, ta sécurité</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
-        .container { background: rgba(0,0,0,0.3); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); max-width: 400px; width: 100%; }
-        h1 { font-size: 3rem; margin-bottom: 10px; color: #fff; text-shadow: 0 0 20px #fdbb2d; }
-        .slogan { font-size: 1.1rem; margin-bottom: 40px; opacity: 0.9; font-style: italic; }
-        .btn { display: block; padding: 15px; margin: 15px 0; border-radius: 10px; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 1rem; }
-        .google { background: white; color: #4285F4; }
-        .google:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(66, 133, 244, 0.5); }
-        .facebook { background: #1877F2; color: white; }
-        .facebook:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(24, 119, 242, 0.5); }
-        .rules { margin-top: 30px; font-size: 0.8rem; opacity: 0.7; line-height: 1.4; }
-        .secret-note { margin-top: 20px; font-size: 0.75rem; color: #fdbb2d; font-weight: bold; }
+        body { background: #f0f2f5; color: #1c1e21; }
+
+        /* HAUT DE PAGE */
+        .header { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); color: white; padding: 15px; text-align: center; font-size: 1.8rem; font-weight: bold; position: sticky; top:0; z-index:100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
+        /* ZONE DE CONNEXION */
+        .login-box { max-width: 400px; margin: 30px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align:center; }
+        .login-box h2 { margin-bottom:20px; color:#1a2a6c; }
+        .btn { display:block; padding:12px; margin:10px auto; border-radius:8px; text-decoration:none; font-weight:bold; width:80%; }
+        .google { background:#4285F4; color:white; }
+        .facebook { background:#1877F2; color:white; }
+
+        /* ZONE DE PUBLICATION */
+        .publish-box { max-width: 500px; margin:20px auto; background:white; border-radius:15px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+        textarea { width:100%; border:1px solid #ddd; border-radius:8px; padding:12px; font-size:1rem; resize:none; min-height:80px; }
+        .file-input { margin:10px 0; }
+        .publish-btn { background:linear-gradient(135deg, #1a2a6c, #b21f1f); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; }
+
+        /* FIL D'ACTUALITÉ */
+        .feed { max-width:500px; margin:20px auto; }
+        .post { background:white; border-radius:15px; padding:15px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+        .post img, .post video { width:100%; border-radius:8px; margin:10px 0; }
+        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:0.9rem; }
+
+        /* RÈGLES & SÉCURITÉ */
+        .rules { text-align:center; font-size:0.8rem; color:#65676b; margin:20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💎 DIAMINA</h1>
-        <p class="slogan">Ton argent, aussi précieux et sûr qu’un diamant</p>
 
+    <!-- HAUT -->
+    <div class="header">💎 DIAMINA</div>
+
+    <!-- CONNEXION -->
+    <div class="login-box" id="loginSection">
+        <h2>Ton argent, aussi précieux et sûr qu’un diamant</h2>
         <a href="#" class="btn google">🔵 Se connecter avec Google</a>
         <a href="#" class="btn facebook">🟦 Se connecter avec Facebook</a>
-
         <div class="rules">
             ⚠️ RÈGLES : Interdit de frauder ou nuire.<br>
             Tout compte malhonnête est supprimé définitivement.<br>
-            Portefeuille utilisateur 100% sécurisé.
-        </div>
-
-        <div class="secret-note">
             ✨ Portefeuille Créateur : Caché, invisible, protégé.
         </div>
     </div>
+
+    <!-- ZONE PUBLIER -->
+    <div class="publish-box" id="publishSection" style="display:none;">
+        <textarea id="postText" placeholder="Quoi de neuf ? Partage ton actualité..."></textarea>
+        <input type="file" id="postImageVideo" class="file-input" accept="image/*,video/*">
+        <button class="publish-btn" onclick="publier()">📤 Publier</button>
+    </div>
+
+    <!-- FIL D'ACTUALITÉ -->
+    <div class="feed" id="feedSection" style="display:none;"></div>
+
+
+    <script>
+        // SIMULATION CONNEXION
+        setTimeout(() => {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('publishSection').style.display = 'block';
+            document.getElementById('feedSection').style.display = 'block';
+        }, 2000);
+
+        // FONCTION PUBLIER
+        function publier() {
+            let texte = document.getElementById('postText').value;
+            let fichier = document.getElementById('postImageVideo').files[0];
+            let feed = document.getElementById('feedSection');
+
+            // Créer le bloc du message
+            let post = document.createElement('div');
+            post.className = 'post';
+
+            // Texte
+            if(texte) post.innerHTML += `<p>${texte}</p>`;
+
+            // Image ou Vidéo
+            if(fichier) {
+                let url = URL.createObjectURL(fichier);
+                if(fichier.type.includes('image')) post.innerHTML += `<img src="${url}">`;
+                if(fichier.type.includes('video')) post.innerHTML += `<video controls src="${url}"></video>`;
+            }
+
+            // Boutons Like/Commentaire
+            post.innerHTML += `<div class="post-actions">❤️ J’aime 💬 Commenter ↪️ Partager</div>`;
+
+            // Ajouter en HAUT du fil
+            feed.prepend(post);
+
+            // Vider la zone d'écriture
+            document.getElementById('postText').value = '';
+            document.getElementById('postImageVideo').value = '';
+        }
+    </script>
+
 </body>
 </html>
-
