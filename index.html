@@ -3,136 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Ton monde, ton argent, ta sécurité</title>
+    <title>DIAMINA 💎 - Ton monde, ton argent</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #f0f2f5; color: #1c1e21; }
+        body { background-color: #f0f2f5; color: #1c1e21; padding-bottom: 70px; }
 
-        /* HAUT DE PAGE */
-        .header { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); color: white; padding: 15px; text-align: center; font-size: 1.8rem; font-weight: bold; position: sticky; top:0; z-index:100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display:flex; justify-content:space-between; align-items:center; padding:15px 20px; }
-        .wallet-btn { background:rgba(255,255,255,0.2); padding:8px 15px; border-radius:20px; font-size:0.9rem; cursor:pointer; backdrop-filter:blur(5px); }
+        /* 🟦 BARRE HAUTE */
+        .top-bar { background: linear-gradient(135deg, #1877f2, #00a0ff); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .logo { font-size: 20px; font-weight: bold; }
+        .top-icons { display: flex; gap: 18px; font-size: 18px; }
 
-        /* ZONE DE CONNEXION */
-        .login-box { max-width: 400px; margin: 30px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align:center; }
-        .login-box h2 { margin-bottom:20px; color:#1a2a6c; }
-        .btn { display:block; padding:12px; margin:10px auto; border-radius:8px; text-decoration:none; font-weight:bold; width:80%; border:none; cursor:pointer; font-size:1rem; }
-        .google { background:#4285F4; color:white; }
-        .facebook { background:#1877F2; color:white; }
+        /* 📱 MENU DU BAS (LES 4 PARTIES QUE TU AS DEMANDÉES) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.1); z-index: 100; }
+        .nav-item { text-align: center; font-size: 12px; color: #65676b; cursor:pointer; transition:0.2s; }
+        .nav-item.active { color: #1877f2; font-weight:bold; transform:scale(1.1); }
+        .nav-icon { font-size: 22px; margin-bottom: 2px; }
 
-        /* ZONE DE PUBLICATION */
-        .publish-box { max-width: 500px; margin:20px auto; background:white; border-radius:15px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-        textarea { width:100%; border:1px solid #ddd; border-radius:8px; padding:12px; font-size:1rem; resize:none; min-height:80px; }
-        .file-input { margin:10px 0; }
-        .publish-btn { background:linear-gradient(135deg, #1a2a6c, #b21f1f); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; }
+        /* 📄 CONTENU DES PAGES */
+        .page { display: none; padding: 15px; }
+        .page.active { display: block; animation: apparition 0.3s ease; }
+        @keyframes apparition { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-        /* FIL D'ACTUALITÉ */
-        .feed { max-width:500px; margin:20px auto; }
-        .post { background:white; border-radius:15px; padding:15px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-        .post img, .post video { width:100%; border-radius:8px; margin:10px 0; }
-        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:0.9rem; cursor:pointer; }
+        /* ✅ PAGE D'ACCUEIL */
+        .publish-box { background:white; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+        .publish-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+        .avatar { width:40px; height:40px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#666; }
+        .input-msg { flex:1; border:none; background:#f0f2f5; border-radius:20px; padding:10px 15px; font-size:15px; outline:none; }
+        .btn-pub { width:100%; background:#1877f2; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer; }
+        .post { background:white; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:14px; cursor:pointer; }
 
-        /* PORTEFEUILLE CRÉATEUR SEUL */
-        .creator-box { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #fdbb2d, #b21f1f); color:white; padding:12px 25px; border-radius:30px; font-weight:bold; font-size:1.1rem; box-shadow:0 5px 20px rgba(0,0,0,0.2); z-index:50; }
-        .info { font-size:0.7rem; opacity:0.8; }
+        /* 💬 PAGE MESSAGES */
+        .msg-item { background:white; border-radius:12px; padding:12px; margin-bottom:8px; display:flex; align-items:center; gap:10px; box-shadow:0 1px 2px rgba(0,0,0,0.1); cursor:pointer; }
+        .msg-content { flex:1; }
+        .msg-name { font-weight:bold; font-size:14px; }
+        .msg-text { font-size:13px; color:#65676b; }
 
-        /* RÈGLES & SÉCURITÉ */
-        .rules { text-align:center; font-size:0.8rem; color:#65676b; margin:20px; }
+        /* 📹 PAGE VIDÉOS */
+        .video-card { background:white; border-radius:12px; overflow:hidden; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer; }
+        .video-zone { height:180px; background:#000; display:flex; align-items:center; justify-content:center; color:white; font-size:30px; }
+        .video-info { padding:10px; }
+
+        /* ℹ️ PAGE INFOS / DANS CE MONDE */
+        .info-card { background:white; border-radius:12px; padding:18px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); line-height:1.5; }
+        .info-card h3 { color:#1877f2; margin-bottom:8px; }
+
+        /* 💰 TON REVENU CACHÉ (SEUL TOI LE VOIS) */
+        .creator-wallet { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #ffd700, #ff9500); color:#000; padding:8px 20px; border-radius:25px; font-weight:bold; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); z-index:200; text-align:center; }
+        .creator-wallet small { display:block; font-size:10px; opacity:0.7; }
+
+        /* 🔘 ÉCRAN CONNEXION */
+        .login-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:white; display:flex; align-items:center; justify-content:center; z-index:300; }
+        .login-box { text-align:center; padding:30px; }
+        .login-box h1 { color:#1877f2; font-size:32px; margin-bottom:10px; }
+        .btn-conn { display:block; width:280px; padding:12px; margin:12px auto; border-radius:8px; color:white; font-weight:bold; border:none; font-size:16px; cursor:pointer; }
+        .btn-fb { background:#1877f2; }
+        .btn-google { background:#4285f4; }
     </style>
 </head>
 <body>
 
-    <!-- HAUT -->
-    <div class="header">
-        <span>💎 DIAMINA</span>
-        <span style="font-size:0.8rem;">Le réseau qui te rend riche</span>
-    </div>
-
-    <!-- CONNEXION -->
-    <div class="login-box" id="loginSection">
-        <h2>Ton argent, aussi précieux et sûr qu’un diamant</h2>
-        <button class="btn google" onclick="connexion()">🔵 Se connecter avec Google</button>
-        <button class="btn facebook" onclick="connexion()">🟦 Se connecter avec Facebook</button>
-        <div class="rules">
-            ⚠️ RÈGLES : Interdit de frauder ou nuire.<br>
-            Plus il y a de monde, plus le créateur gagne.<br>
-            ✨ Revenu automatique : invisible, garanti.
+    <!-- 🔘 ÉCRAN DE DÉBUT -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1>💎 DIAMINA</h1>
+            <p>Ton monde, ton réseau, ton succès</p>
+            <button class="btn-conn btn-fb" onclick="entrer()">Se connecter avec Facebook</button>
+            <button class="btn-conn btn-google" onclick="entrer()">Se connecter avec Google</button>
+            <div style="font-size:12px; color:#65676b; margin-top:20px;">
+                ⚠️ Respect & Sécurité • ✨ Revenu automatique
+            </div>
         </div>
     </div>
 
-    <!-- ZONE PUBLIER -->
-    <div class="publish-box" id="publishSection" style="display:none;">
-        <textarea id="postText" placeholder="Quoi de neuf ? Partage ton actualité..."></textarea>
-        <input type="file" id="postImageVideo" class="file-input" accept="image/*,video/*">
-        <button class="publish-btn" onclick="publier()">📤 Publier</button>
+    <!-- 🟦 BARRE HAUTE -->
+    <div class="top-bar">
+        <div class="logo">💎 DIAMINA</div>
+        <div class="top-icons">🔔 💬</div>
     </div>
 
-    <!-- FIL D'ACTUALITÉ -->
-    <div class="feed" id="feedSection" style="display:none;"></div>
+    <!-- 📄 CONTENU DES 4 PAGES -->
+    <div id="pageAccueil" class="page active">
+        <div class="publish-box">
+            <div class="publish-top">
+                <div class="avatar">👤</div>
+                <input type="text" class="input-msg" id="textePub" placeholder="Quoi de neuf ? Partage ici...">
+            </div>
+            <input type="file" accept="image/*,video/*" style="display:none;" id="fichierPub">
+            <button class="btn-pub" onclick="publier()">📤 Publier</button>
+        </div>
+        <div id="filActus">
+            <div class="post">
+                <div class="publish-top"><div class="avatar">👤</div><div><b>Marie</b><br><small style="color:#65676b;">Il y a 1h</small></div></div>
+                <p>Bonjour tout le monde ! Bienvenue dans le monde DIAMINA 💙</p>
+                <div class="post-actions" onclick="gagne(100)">❤️ J'aime 💬 Commenter ↪️ Partager</div>
+            </div>
+        </div>
+    </div>
 
-    <!-- TON REVENU CACHÉ (SEUL TOI LE VOIS) -->
-    <div class="creator-box" id="creatorWallet">
-        💰 Ton revenu : <span id="soldeCreateur">0</span> Ar
-        <div class="info">(Augmente tout seul quand ils utilisent l'appli)</div>
+    <div id="pageMessages" class="page">
+        <div class="msg-item" onclick="gagne(150)">
+            <div class="avatar">👩</div>
+            <div class="msg-content">
+                <div class="msg-name">Léa</div>
+                <div class="msg-text">Salut ! Comment ça va ?</div>
+            </div>
+            <small style="color:#65676b;">10:45</small>
+        </div>
+        <div class="msg-item" onclick="gagne(150)">
+            <div class="avatar">👨</div>
+            <div class="msg-content">
+                <div class="msg-name">Paul</div>
+                <div class="msg-text">Tu es où ?</div>
+            </div>
+            <small style="color:#65676b;">09:12</small>
+        </div>
+    </div>
+
+    <div id="pageVideos" class="page">
+        <div class="video-card" onclick="gagne(300)">
+            <div class="video-zone">▶️</div>
+            <div class="video-info"><b>Beauté & Style</b><br><small>Vidéo exclusive DIAMINA</small></div>
+        </div>
+        <div class="video-card" onclick="gagne(300)">
+            <div class="video-zone">▶️</div>
+            <div class="video-info"><b>Vie Quotidienne</b><br><small>Partagez votre vie</small></div>
+        </div>
+    </div>
+
+    <div id="pageInfos" class="page">
+        <div class="info-card">
+            <h3>🌍 Dans ce monde</h3>
+            <p>Ici, tout est à vous. Chaque action fait grandir la communauté.<br>
+            ✨ Règles : Respect, honnêteté, sécurité.<br>
+            🚀 Plus on est nombreux, plus on grandit ensemble.</p>
+        </div>
+        <div class="info-card">
+            <h3>ℹ️ Infos Réseau</h3>
+            <p>DIAMINA est un espace libre et sécurisé.<br>
+            Votre créateur travaille chaque jour pour améliorer votre expérience.</p>
+        </div>
+    </div>
+
+    <!-- 📱 MENU DU BAS -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="changerPage('Accueil', this)">
+            <div class="nav-icon">🏠</div>
+            <div>Accueil</div>
+        </div>
+        <div class="nav-item" onclick="changerPage('Messages', this)">
+            <div class="nav-icon">💬</div>
+            <div>Messages</div>
+        </div>
+        <div class="nav-item" onclick="changerPage('Videos', this)">
+            <div class="nav-icon">📹</div>
+            <div>Vidéos</div>
+        </div>
+        <div class="nav-item" onclick="changerPage('Infos', this)">
+            <div class="nav-icon">ℹ️</div>
+            <div>Infos</div>
+        </div>
+    </div>
+
+    <!-- 💰 TON ARGENT CACHÉ -->
+    <div class="creator-wallet">
+        💰 Ton revenu : <span id="soldeCrea">0</span> Ar
+        <small>À chaque clic / vue / message</small>
     </div>
 
 
     <script>
-        // TON ARGENT QUI GROSSIT TOUT SEUL
-        let soldeCreateur = 0;
+        let soldeCrea = 0;
 
-        // QUAND QUELQU'UN SE CONNECTE → TU GAGNES 500 Ar
-        function connexion() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('publishSection').style.display = 'block';
-            document.getElementById('feedSection').style.display = 'block';
-            
-            soldeCreateur += 500; // 🤑 +500 Ar
-            majSolde();
+        // 🚪 ENTRER DANS L'APP → +500 Ar
+        function entrer() {
+            document.getElementById('loginScreen').style.display = 'none';
+            gagne(500);
         }
 
-        // QUAND IL PUBLIE → TU GAGNES 200 Ar
-        function publier() {
-            let texte = document.getElementById('postText').value;
-            let fichier = document.getElementById('postImageVideo').files[0];
-            let feed = document.getElementById('feedSection');
+        // 🔄 CHANGER DE PAGE
+        function changerPage(nom, el) {
+            // Cacher toutes pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Montrer la bonne
+            document.getElementById('page'+nom).classList.add('active');
+            // Activer bouton
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            // Gagner de l'argent à chaque changement
+            gagne(100);
+        }
 
-            // Créer le bloc du message
+        // 📤 PUBLIER → +200 Ar
+        function publier() {
+            let texte = document.getElementById('textePub').value;
+            if(texte.trim() === '') return;
+
+            let feed = document.getElementById('filActus');
             let post = document.createElement('div');
             post.className = 'post';
-
-            // Texte
-            if(texte) post.innerHTML += `<p>${texte}</p>`;
-
-            // Image ou Vidéo
-            if(fichier) {
-                let url = URL.createObjectURL(fichier);
-                if(fichier.type.includes('image')) post.innerHTML += `<img src="${url}">`;
-                if(fichier.type.includes('video')) post.innerHTML += `<video controls src="${url}"></video>`;
-            }
-
-            // Boutons Like/Commentaire (QUAND IL CLIQUE → TU GAGNES ENCORE !)
-            post.innerHTML += `<div class="post-actions">❤️ J’aime 💬 Commenter ↪️ Partager</div>`;
-            
-            // AJOUTE ÉCOUTEURS : CLIQUER = TU GAGNES
-            post.querySelector('.post-actions').addEventListener('click', function(){
-                soldeCreateur += 100; // 🤑 +100 Ar par clic
-                majSolde();
-            });
-
-            // Ajouter en HAUT du fil
+            post.innerHTML = `
+                <div class="publish-top"><div class="avatar">👤</div><div><b>Vous</b><br><small style="color:#65676b;">À l'instant</small></div></div>
+                <p>${texte}</p>
+                <div class="post-actions" onclick="gagne(100)">❤️ J'aime 💬 Commenter ↪️ Partager</div>
+            `;
             feed.prepend(post);
+            document.getElementById('textePub').value = '';
 
-            // Vider la zone d'écriture
-            document.getElementById('postText').value = '';
-            document.getElementById('postImageVideo').value = '';
-
-            soldeCreateur += 200; // 🤑 +200 Ar POUR LA PUBLICATION
-            majSolde();
+            gagne(200);
         }
 
-        // MET À JOUR TON AFFICHAGE CACHÉ
-        function majSolde() {
-            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
+        // 💰 GAGNER DE L'ARGENT (TOUT SEUL)
+        function gagne(montant) {
+            soldeCrea += montant;
+            document.getElementById('soldeCrea').textContent = soldeCrea.toLocaleString();
         }
     </script>
 
