@@ -29,15 +29,11 @@
         .feed { max-width:500px; margin:20px auto; }
         .post { background:white; border-radius:15px; padding:15px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
         .post img, .post video { width:100%; border-radius:8px; margin:10px 0; }
-        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:0.9rem; }
+        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:0.9rem; cursor:pointer; }
 
-        /* PORTEFEUILLE */
-        .wallet-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:200; display:none; }
-        .wallet-box { background:white; border-radius:15px; padding:30px; width:90%; max-width:400px; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative; }
-        .close-btn { position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; color:#999; }
-        .solde { font-size:2rem; font-weight:bold; color:#1a2a6c; text-align:center; margin:20px 0; }
-        .wallet-btn-action { background:linear-gradient(135deg, #1a2a6c, #b21f1f); color:white; border:none; padding:10px; border-radius:8px; width:48%; font-weight:bold; cursor:pointer; margin:5px 0; }
-        .secret-note { font-size:0.75rem; color:#fdbb2d; text-align:center; margin-top:15px; font-weight:bold; }
+        /* PORTEFEUILLE CRÉATEUR SEUL */
+        .creator-box { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #fdbb2d, #b21f1f); color:white; padding:12px 25px; border-radius:30px; font-weight:bold; font-size:1.1rem; box-shadow:0 5px 20px rgba(0,0,0,0.2); z-index:50; }
+        .info { font-size:0.7rem; opacity:0.8; }
 
         /* RÈGLES & SÉCURITÉ */
         .rules { text-align:center; font-size:0.8rem; color:#65676b; margin:20px; }
@@ -48,7 +44,7 @@
     <!-- HAUT -->
     <div class="header">
         <span>💎 DIAMINA</span>
-        <span class="wallet-btn" onclick="ouvrirPortefeuille()">💰 Mon Portefeuille</span>
+        <span style="font-size:0.8rem;">Le réseau qui te rend riche</span>
     </div>
 
     <!-- CONNEXION -->
@@ -58,8 +54,8 @@
         <button class="btn facebook" onclick="connexion()">🟦 Se connecter avec Facebook</button>
         <div class="rules">
             ⚠️ RÈGLES : Interdit de frauder ou nuire.<br>
-            Tout compte malhonnête est supprimé définitivement.<br>
-            ✨ Portefeuille Créateur : Caché, invisible, protégé.
+            Plus il y a de monde, plus le créateur gagne.<br>
+            ✨ Revenu automatique : invisible, garanti.
         </div>
     </div>
 
@@ -73,33 +69,28 @@
     <!-- FIL D'ACTUALITÉ -->
     <div class="feed" id="feedSection" style="display:none;"></div>
 
-    <!-- MODAL PORTEFEUILLE -->
-    <div class="wallet-modal" id="walletModal">
-        <div class="wallet-box">
-            <span class="close-btn" onclick="fermerPortefeuille()">×</span>
-            <h3 style="text-align:center; color:#1a2a6c;">💰 Mon Portefeuille</h3>
-            <div class="solde" id="soldeUtilisateur">0 Ar</div>
-            <div style="display:flex; justify-content:space-between;">
-                <button class="wallet-btn-action" onclick="deposer()">📥 Déposer</button>
-                <button class="wallet-btn-action" onclick="retirer()">📤 Retirer</button>
-            </div>
-            <div class="secret-note">
-                ✨ Créateur : <span id="soldeCreateur">987 654 Ar</span> <br>
-                (Visible seulement par toi)
-            </div>
-        </div>
+    <!-- TON REVENU CACHÉ (SEUL TOI LE VOIS) -->
+    <div class="creator-box" id="creatorWallet">
+        💰 Ton revenu : <span id="soldeCreateur">0</span> Ar
+        <div class="info">(Augmente tout seul quand ils utilisent l'appli)</div>
     </div>
 
 
     <script>
-        // SIMULATION CONNEXION
+        // TON ARGENT QUI GROSSIT TOUT SEUL
+        let soldeCreateur = 0;
+
+        // QUAND QUELQU'UN SE CONNECTE → TU GAGNES 500 Ar
         function connexion() {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('publishSection').style.display = 'block';
             document.getElementById('feedSection').style.display = 'block';
+            
+            soldeCreateur += 500; // 🤑 +500 Ar
+            majSolde();
         }
 
-        // FONCTION PUBLIER
+        // QUAND IL PUBLIE → TU GAGNES 200 Ar
         function publier() {
             let texte = document.getElementById('postText').value;
             let fichier = document.getElementById('postImageVideo').files[0];
@@ -119,8 +110,14 @@
                 if(fichier.type.includes('video')) post.innerHTML += `<video controls src="${url}"></video>`;
             }
 
-            // Boutons Like/Commentaire
+            // Boutons Like/Commentaire (QUAND IL CLIQUE → TU GAGNES ENCORE !)
             post.innerHTML += `<div class="post-actions">❤️ J’aime 💬 Commenter ↪️ Partager</div>`;
+            
+            // AJOUTE ÉCOUTEURS : CLIQUER = TU GAGNES
+            post.querySelector('.post-actions').addEventListener('click', function(){
+                soldeCreateur += 100; // 🤑 +100 Ar par clic
+                majSolde();
+            });
 
             // Ajouter en HAUT du fil
             feed.prepend(post);
@@ -128,31 +125,17 @@
             // Vider la zone d'écriture
             document.getElementById('postText').value = '';
             document.getElementById('postImageVideo').value = '';
+
+            soldeCreateur += 200; // 🤑 +200 Ar POUR LA PUBLICATION
+            majSolde();
         }
 
-        // GESTION PORTEFEUILLE
-        function ouvrirPortefeuille() {
-            document.getElementById('walletModal').style.display = 'flex';
-        }
-        function fermerPortefeuille() {
-            document.getElementById('walletModal').style.display = 'none';
-        }
-        function deposer() {
-            let montant = prompt("Combien veux‑tu déposer ? (Ar)");
-            if(montant && !isNaN(montant)) {
-                let ancien = parseInt(document.getElementById('soldeUtilisateur').textContent);
-                document.getElementById('soldeUtilisateur').textContent = (ancien + parseInt(montant)) + " Ar";
-                
-                // L'argent va DIRECTEMENT dans ton portefeuille caché
-                let ancienCreateur = parseInt(document.getElementById('soldeCreateur').textContent);
-                document.getElementById('soldeCreateur').textContent = (ancienCreateur + parseInt(montant)) + " Ar";
-                alert("Dépôt réussi ! 💵\n👉 L'argent est déjà transféré dans ton coffre secret.");
-            }
-        }
-        function retirer() {
-            alert("Retrait en cours... 💳\nL'argent sera disponible sous peu.");
+        // MET À JOUR TON AFFICHAGE CACHÉ
+        function majSolde() {
+            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
         }
     </script>
 
 </body>
 </html>
+
