@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Vrai Réseau Social</title>
+    <title>DIAMINA 💎 - Réseau Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ✅ LIENS FIREBASE OFFICIELS -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
@@ -19,9 +20,7 @@
                         gold: '#ffd700',
                         dark: '#1c1e21'
                     },
-                    fontFamily: {
-                        sans: ['Arial', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Arial', 'sans-serif'] },
                 }
             }
         }
@@ -71,7 +70,7 @@
 
             <p class="text-xs text-gray-500 mt-6">
                 🔒 Sécurisé • 🌍 Mondial • ✨ Vrai réseau<br>
-                © 2026 DIAMINA - Ton monde, ton réseau
+                © 2026 DIAMINA - Angelico Elysee
             </p>
         </div>
     </div>
@@ -92,7 +91,6 @@
 
         <!-- PAGE 1 : ACCUEIL -->
         <section id="pageAccueil" class="page-content active py-4">
-            <!-- Zone publication -->
             <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold" id="userAvatar">👤</div>
@@ -106,8 +104,6 @@
                     <button onclick="publierVrai()" class="bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary/90 transition">Publier</button>
                 </div>
             </div>
-
-            <!-- Fil d'actualité MONDIAL, VRAI, TEMPS RÉEL -->
             <div id="filGlobal" class="space-y-4">
                 <p class="text-center text-gray-500 py-10">🌍 Les publications du monde entier apparaissent ici...</p>
             </div>
@@ -151,7 +147,7 @@
             </div>
         </section>
 
-        <!-- ✅ PAGE 4 : TON PORTEFEUILLE & RETRAITS -->
+        <!-- ✅ PAGE 4 : PORTEFEUILLE & RETRAITS -->
         <section id="pagePortefeuille" class="page-content py-4 hidden">
             <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-6 shadow-xl text-center mb-6">
                 <h2 class="text-2xl font-bold text-black mb-2">💰 Ton Revenu Créateur</h2>
@@ -163,34 +159,29 @@
                 <h3 class="font-bold text-lg mb-4 text-center">💸 Retirer mon argent</h3>
                 <p class="text-sm text-gray-600 text-center mb-5">Choisissez votre mode de paiement :</p>
 
-                <!-- 🟢 BOUTON MVOLA -->
                 <button onclick="ouvrirRetrait('MVOLA')" class="w-full bg-green-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2">
                     <i class="fa fa-mobile-phone text-xl"></i> Retirer par MVOLA
                 </button>
-
-                <!-- 🔵 BOUTON SKRILL -->
                 <button onclick="ouvrirRetrait('SKRILL')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
                     <i class="fa fa-credit-card text-xl"></i> Retirer par SKRILL
                 </button>
-
-                <!-- 🟣 BOUTON COMPTE BANCAIRE -->
                 <button onclick="ouvrirRetrait('BANQUE')" class="w-full bg-purple-600 text-white py-4 rounded-xl font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2">
                     <i class="fa fa-bank text-xl"></i> Virement Bancaire
                 </button>
             </div>
 
             <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg">
-                <p class="font-semibold text-primary">🔒 Sécurité</p>
-                <p class="text-sm text-gray-700">Retraits sécurisés. <b>Clé d'accès requise.</b></p>
+                <p class="font-semibold text-primary">🔒 Sécurité maximale</p>
+                <p class="text-sm text-gray-700">Retraits protégés. <b>Clé d'accès obligatoire.</b></p>
             </div>
         </section>
 
         <!-- PAGE 5 : INFOS -->
         <section id="pageInfos" class="page-content py-4 hidden">
             <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm mb-5">
-                <h2 class="text-xl font-bold text-primary mb-3">🌍 Dans ce monde</h2>
+                <h2 class="text-xl font-bold text-primary mb-3">🌍 À propos de DIAMINA</h2>
                 <p class="text-gray-700 leading-relaxed">
-                    DIAMINA est un vrai réseau social mondial. Ici, vous avez votre compte, votre profil, vos amis. Ce que vous publiez est réel, vu par tous, comme sur les plus grands réseaux.
+                    DIAMINA est un vrai réseau social mondial, sécurisé, comme les grands. Ici vous êtes propriétaire, vous gagnez de l'argent sur toutes les actions, et seul vous pouvez retirer vos gains avec votre clé secrète.
                 </p>
             </div>
         </section>
@@ -222,7 +213,7 @@
         </div>
     </nav>
 
-    <!-- MODAL RETRAIT SÉCURISÉ AVEC CLÉ -->
+    <!-- MODAL RETRAIT SÉCURISÉ -->
     <div id="modalRetrait" class="fixed inset-0 bg-black/70 z-[60] hidden items-center justify-center">
         <div class="bg-white rounded-2xl p-6 w-[90%] max-w-[320px]">
             <h3 class="text-xl font-bold text-center text-primary mb-4" id="titreRetrait">💸 Retrait Sécurisé</h3>
@@ -244,21 +235,20 @@
     </div>
 
     <script>
-        // Configuration base de données
+        // ✅ TA CONFIGURATION UNIQUE FIREBASE (récupérée à l'instant)
         const firebaseConfig = {
-            apiKey: "AIzaSyBdX9xQZ7xQZ7xQZ7xQZ7xQZ7xQZ7xQZ7",
-            authDomain: "diamina-reel.firebaseapp.com",
-            projectId: "diamina-reel",
-            storageBucket: "diamina-reel.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abc123def456"
+          apiKey: "AIzaSyDDaBFNsXvoJ6j8qYp3hhkTMMcbu5Yz9QU",
+          authDomain: "diamina-83677.firebaseapp.com",
+          projectId: "diamina-83677",
+          storageBucket: "diamina-83677.firebasestorage.app",
+          messagingSenderId: "85487795653",
+          appId: "1:85487795653:web:b1bb712e1d2244b3695fac"
         };
 
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // ✅ TA CLÉ D'ACCÈS UNIQUE (SEULE TOI LA CONNAIS)
         const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
         let modeRetrait = "";
         let soldeCrea = 0;
@@ -273,7 +263,7 @@
             document.getElementById('loginForm').classList.remove('hidden');
         }
 
-        // === VRAIE INSCRIPTION ===
+        // === FONCTIONS AUTHENTIFICATION ===
         function inscrireVrai() {
             const nom = document.getElementById('regNom').value.trim();
             const email = document.getElementById('regEmail').value.trim();
@@ -297,7 +287,6 @@
             .catch((error) => alert("❌ Erreur : " + error.message));
         }
 
-        // === VRAIE CONNEXION ===
         function seConnecterVrai() {
             const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
@@ -323,20 +312,20 @@
             chargerPublications();
         }
 
-        // === CHANGER DE PAGE ===
+        // === NAVIGATION ===
         function changerPage(nom, el) {
             document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
             document.getElementById(`page${nom}`).classList.remove('hidden');
             document.getElementById(`page${nom}`).classList.add('active');
 
-            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary','font-bold'); b.classList.add('text-gray-500');});
-            el.classList.remove('text-gray-500'); el.classList.add('text-primary','font-bold');
+            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary', 'font-semibold'); b.classList.add('text-gray-500');});
+            el.classList.remove('text-gray-500'); el.classList.add('text-primary', 'font-semibold');
 
             soldeCrea += 20;
             majSolde();
         }
 
-        // === PUBLIER ===
+        // === PUBLICATIONS ===
         function publierVrai() {
             const texte = document.getElementById('nouveauPost').value.trim();
             if(!texte) return;
@@ -355,7 +344,6 @@
             });
         }
 
-        // === CHARGER PUBLICATIONS ===
         function chargerPublications() {
             db.collection('publications').orderBy('date', 'desc').onSnapshot((snapshot) => {
                 const fil = document.getElementById('filGlobal');
@@ -387,7 +375,6 @@
             });
         }
 
-        // === AIMER ===
         function aimerPost(id, actuel) {
             db.collection('publications').doc(id).update({likes: actuel + 1});
             soldeCrea += 5;
@@ -397,7 +384,7 @@
         // === RETRAIT ===
         function ouvrirRetrait(type) {
             modeRetrait = type;
-            document.getElementById('titreRetrait').textContent = `💸 Retrait par ${type}`;
+            document.getElementById('titreRetrait').innerText = `💸 Retrait par ${type}`;
             document.getElementById('modalRetrait').style.display = 'flex';
         }
         function fermerRetrait() {
@@ -411,12 +398,10 @@
             const montant = parseInt(document.getElementById('montantRetrait').value);
             const compte = document.getElementById('compteRetrait').value.trim();
 
-            // ✅ VÉRIFICATION CLÉ SECRÈTE
             if(cle !== MA_CLE_SECRETE) return alert("❌ CLÉ D'ACCÈS INCORRECTE ! Accès refusé.");
             if(!montant || montant <=0 || montant > soldeCrea) return alert("❌ Montant invalide ou insuffisant.");
             if(!compte) return alert("❌ Entrez votre numéro ou compte.");
 
-            // ✅ VALIDATION FINALE
             soldeCrea -= montant;
             majSolde();
             fermerRetrait();
@@ -425,7 +410,7 @@
         }
 
         function majSolde() {
-            document.getElementById('soldeCrea').textContent = soldeCrea.toLocaleString();
+            document.getElementById('soldeCrea').innerText = soldeCrea.toLocaleString() + " Ar";
         }
 
         function deconnexion() {
@@ -435,3 +420,4 @@
 
 </body>
 </html>
+
