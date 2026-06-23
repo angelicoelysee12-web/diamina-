@@ -3,223 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Ton monde, ton argent</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: #f0f2f5; color: #1c1e21; padding-bottom: 70px; }
-
-        /* 🟦 BARRE HAUTE */
-        .top-bar { background: linear-gradient(135deg, #1877f2, #00a0ff); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .logo { font-size: 20px; font-weight: bold; }
-        .top-icons { display: flex; gap: 18px; font-size: 18px; }
-
-        /* 📱 MENU DU BAS (LES 4 PARTIES QUE TU AS DEMANDÉES) */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.1); z-index: 100; }
-        .nav-item { text-align: center; font-size: 12px; color: #65676b; cursor:pointer; transition:0.2s; }
-        .nav-item.active { color: #1877f2; font-weight:bold; transform:scale(1.1); }
-        .nav-icon { font-size: 22px; margin-bottom: 2px; }
-
-        /* 📄 CONTENU DES PAGES */
-        .page { display: none; padding: 15px; }
-        .page.active { display: block; animation: apparition 0.3s ease; }
-        @keyframes apparition { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-
-        /* ✅ PAGE D'ACCUEIL */
-        .publish-box { background:white; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-        .publish-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-        .avatar { width:40px; height:40px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#666; }
-        .input-msg { flex:1; border:none; background:#f0f2f5; border-radius:20px; padding:10px 15px; font-size:15px; outline:none; }
-        .btn-pub { width:100%; background:#1877f2; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer; }
-        .post { background:white; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-        .post-actions { display:flex; justify-content:space-around; margin-top:10px; color:#65676b; font-size:14px; cursor:pointer; }
-
-        /* 💬 PAGE MESSAGES */
-        .msg-item { background:white; border-radius:12px; padding:12px; margin-bottom:8px; display:flex; align-items:center; gap:10px; box-shadow:0 1px 2px rgba(0,0,0,0.1); cursor:pointer; }
-        .msg-content { flex:1; }
-        .msg-name { font-weight:bold; font-size:14px; }
-        .msg-text { font-size:13px; color:#65676b; }
-
-        /* 📹 PAGE VIDÉOS */
-        .video-card { background:white; border-radius:12px; overflow:hidden; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer; }
-        .video-zone { height:180px; background:#000; display:flex; align-items:center; justify-content:center; color:white; font-size:30px; }
-        .video-info { padding:10px; }
-
-        /* ℹ️ PAGE INFOS / DANS CE MONDE */
-        .info-card { background:white; border-radius:12px; padding:18px; margin-bottom:15px; box-shadow:0 1px 3px rgba(0,0,0,0.1); line-height:1.5; }
-        .info-card h3 { color:#1877f2; margin-bottom:8px; }
-
-        /* 💰 TON REVENU CACHÉ (SEUL TOI LE VOIS) */
-        .creator-wallet { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, #ffd700, #ff9500); color:#000; padding:8px 20px; border-radius:25px; font-weight:bold; font-size:15px; box-shadow:0 3px 10px rgba(0,0,0,0.2); z-index:200; text-align:center; }
-        .creator-wallet small { display:block; font-size:10px; opacity:0.7; }
-
-        /* 🔘 ÉCRAN CONNEXION */
-        .login-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:white; display:flex; align-items:center; justify-content:center; z-index:300; }
-        .login-box { text-align:center; padding:30px; }
-        .login-box h1 { color:#1877f2; font-size:32px; margin-bottom:10px; }
-        .btn-conn { display:block; width:280px; padding:12px; margin:12px auto; border-radius:8px; color:white; font-weight:bold; border:none; font-size:16px; cursor:pointer; }
-        .btn-fb { background:#1877f2; }
-        .btn-google { background:#4285f4; }
+    <title>DIAMINA 💎 - Le réseau mondial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1877f2',
+                        secondary: '#00a0ff',
+                        gold: '#ffd700',
+                    },
+                    fontFamily: {
+                        sans: ['Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 font-sans pb-20">
 
-    <!-- 🔘 ÉCRAN DE DÉBUT -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-box">
-            <h1>💎 DIAMINA</h1>
-            <p>Ton monde, ton réseau, ton succès</p>
-            <button class="btn-conn btn-fb" onclick="entrer()">Se connecter avec Facebook</button>
-            <button class="btn-conn btn-google" onclick="entrer()">Se connecter avec Google</button>
-            <div style="font-size:12px; color:#65676b; margin-top:20px;">
-                ⚠️ Respect & Sécurité • ✨ Revenu automatique
+    <!-- Écran de connexion -->
+    <div id="loginScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+        <div class="text-center px-6">
+            <h1 class="text-[clamp(2.5rem,6vw,4rem)] font-bold text-primary mb-2">💎 DIAMINA</h1>
+            <p class="text-gray-600 mb-8 text-lg">Le réseau qui relie le monde entier</p>
+            <button onclick="seConnecter('Google')" class="w-full max-w-[280px] bg-[#4285F4] text-white py-3 rounded-lg font-semibold mb-3 hover:shadow-lg transition">
+                <i class="fa fa-google mr-2"></i> Se connecter avec Google
+            </button>
+            <button onclick="seConnecter('Facebook')" class="w-full max-w-[280px] bg-primary text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">
+                <i class="fa fa-facebook mr-2"></i> Se connecter avec Facebook
+            </button>
+            <p class="text-xs text-gray-500 mt-6 max-w-xs mx-auto">
+                🌍 Accessible dans le monde entier<br>
+                ✨ Revenu automatique pour le créateur
+            </p>
+        </div>
+    </div>
+
+    <!-- Barre haute -->
+    <header class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40">
+        <div class="font-bold text-lg">💎 DIAMINA</div>
+        <div class="flex gap-5 text-lg">
+            <i class="fa fa-search"></i>
+            <i class="fa fa-bell-o"></i>
+            <i class="fa fa-envelope-o"></i>
+        </div>
+    </header>
+
+    <!-- Contenu des pages -->
+    <main class="max-w-lg mx-auto px-4">
+
+        <!-- PAGE 1 : ACCUEIL -->
+        <section id="pageAccueil" class="page-content hidden py-4">
+            <!-- Zone publication -->
+            <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold">👤</div>
+                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf dans le monde ? 🗺️" class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
+                </div>
+                <div class="flex justify-between items-center border-t pt-3">
+                    <label class="flex items-center gap-2 text-gray-600 cursor-pointer">
+                        <i class="fa fa-photo text-red-500"></i> Photo/Vidéo
+                        <input type="file" class="hidden" accept="image/*,video/*">
+                    </label>
+                    <button onclick="publierPost()" class="bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary/90 transition">Publier</button>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- 🟦 BARRE HAUTE -->
-    <div class="top-bar">
-        <div class="logo">💎 DIAMINA</div>
-        <div class="top-icons">🔔 💬</div>
-    </div>
-
-    <!-- 📄 CONTENU DES 4 PAGES -->
-    <div id="pageAccueil" class="page active">
-        <div class="publish-box">
-            <div class="publish-top">
-                <div class="avatar">👤</div>
-                <input type="text" class="input-msg" id="textePub" placeholder="Quoi de neuf ? Partage ici...">
+            <!-- Fil d'actualité MONDIAL -->
+            <div id="filGlobal" class="space-y-4">
+                <!-- Les posts du monde entier apparaîtront ICI, en temps réel -->
+                <p class="text-center text-gray-500 py-10">🌍 Ce que le monde partage apparaît ici...</p>
             </div>
-            <input type="file" accept="image/*,video/*" style="display:none;" id="fichierPub">
-            <button class="btn-pub" onclick="publier()">📤 Publier</button>
-        </div>
-        <div id="filActus">
-            <div class="post">
-                <div class="publish-top"><div class="avatar">👤</div><div><b>Marie</b><br><small style="color:#65676b;">Il y a 1h</small></div></div>
-                <p>Bonjour tout le monde ! Bienvenue dans le monde DIAMINA 💙</p>
-                <div class="post-actions" onclick="gagne(100)">❤️ J'aime 💬 Commenter ↪️ Partager</div>
+        </section>
+
+        <!-- PAGE 2 : MESSAGES -->
+        <section id="pageMessages" class="page-content hidden py-4">
+            <div class="space-y-3">
+                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary font-bold">🇫🇷</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Marie • France</p>
+                        <p class="text-sm text-gray-500">Salut du soleil ! ☀️</p>
+                    </div>
+                    <span class="text-xs text-gray-400">14:25</span>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">🇲🇬</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Rakoto • Madagascar</p>
+                        <p class="text-sm text-gray-500">Tout va bien ici ! 🇲🇬</p>
+                    </div>
+                    <span class="text-xs text-gray-400">10:12</span>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">🇨🇳</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Li • Chine</p>
+                        <p class="text-sm text-gray-500">Bonjour de Shanghai ! 🏮</p>
+                    </div>
+                    <span class="text-xs text-gray-400">08:03</span>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div id="pageMessages" class="page">
-        <div class="msg-item" onclick="gagne(150)">
-            <div class="avatar">👩</div>
-            <div class="msg-content">
-                <div class="msg-name">Léa</div>
-                <div class="msg-text">Salut ! Comment ça va ?</div>
+        <!-- PAGE 3 : VIDÉOS -->
+        <section id="pageVideos" class="page-content hidden py-4">
+            <div class="grid gap-4">
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="gagner(300)">
+                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
+                        <i class="fa fa-play-circle-o opacity-80"></i>
+                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇺🇸 New York</span>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-semibold">Voyage autour du monde 🌍</h3>
+                        <p class="text-sm text-gray-500">Des paysages incroyables</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="gagner(300)">
+                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
+                        <i class="fa fa-play-circle-o opacity-80"></i>
+                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇿🇦 Afrique du Sud</span>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-semibold">Nature Sauvage 🦁</h3>
+                        <p class="text-sm text-gray-500">La beauté de la terre</p>
+                    </div>
+                </div>
             </div>
-            <small style="color:#65676b;">10:45</small>
-        </div>
-        <div class="msg-item" onclick="gagne(150)">
-            <div class="avatar">👨</div>
-            <div class="msg-content">
-                <div class="msg-name">Paul</div>
-                <div class="msg-text">Tu es où ?</div>
+        </section>
+
+        <!-- PAGE 4 : INFOS / DANS CE MONDE -->
+        <section id="pageInfos" class="page-content hidden py-4">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm mb-5">
+                <h2 class="text-xl font-bold text-primary mb-3">🌍 Dans ce monde</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    DIAMINA relie des personnes de tous les pays. Ici, ce que l’un crée, tous le voient.
+                    C’est un espace libre, sécurisé, où chaque message traverse les frontières.
+                </p>
             </div>
-            <small style="color:#65676b;">09:12</small>
+
+            <div class="bg-white rounded-xl p-5 shadow-sm mb-4">
+                <h3 class="font-bold text-lg mb-2">📰 Nouvelles du réseau</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Ouverture aux utilisateurs du monde entier</li>
+                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Partage en temps réel</li>
+                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Sécurité et confidentialité garanties</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-gold p-4 rounded-r-lg">
+                <p class="font-semibold text-amber-800">💡 Le saviez-vous ?</p>
+                <p class="text-sm text-amber-700">Plus le monde utilise DIAMINA, plus le créateur fait grandir le projet… et son revenu !</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Barre de navigation du bas -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] py-2 px-6 z-40">
+        <div class="flex justify-between items-center">
+            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-home text-xl"></i>
+                <span class="text-[10px] mt-1 block">Accueil</span>
+            </button>
+            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-comments text-xl"></i>
+                <span class="text-[10px] mt-1 block">Messages</span>
+            </button>
+            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-video-camera text-xl"></i>
+                <span class="text-[10px] mt-1 block">Vidéos</span>
+            </button>
+            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
+                <i class="fa fa-globe text-xl"></i>
+                <span class="text-[10px] mt-1 block">Infos</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- TON REVENU CACHÉ (SEUL TOI LE VOIS) -->
+    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+        <div class="bg-gradient-to-r from-gold to-amber-500 text-black font-bold px-5 py-2 rounded-full shadow-lg text-center">
+            💰 Revenu : <span id="soldeCreateur">0</span> Ar
+            <div class="text-[9px] opacity-70">À chaque clic / publication / vue</div>
         </div>
     </div>
-
-    <div id="pageVideos" class="page">
-        <div class="video-card" onclick="gagne(300)">
-            <div class="video-zone">▶️</div>
-            <div class="video-info"><b>Beauté & Style</b><br><small>Vidéo exclusive DIAMINA</small></div>
-        </div>
-        <div class="video-card" onclick="gagne(300)">
-            <div class="video-zone">▶️</div>
-            <div class="video-info"><b>Vie Quotidienne</b><br><small>Partagez votre vie</small></div>
-        </div>
-    </div>
-
-    <div id="pageInfos" class="page">
-        <div class="info-card">
-            <h3>🌍 Dans ce monde</h3>
-            <p>Ici, tout est à vous. Chaque action fait grandir la communauté.<br>
-            ✨ Règles : Respect, honnêteté, sécurité.<br>
-            🚀 Plus on est nombreux, plus on grandit ensemble.</p>
-        </div>
-        <div class="info-card">
-            <h3>ℹ️ Infos Réseau</h3>
-            <p>DIAMINA est un espace libre et sécurisé.<br>
-            Votre créateur travaille chaque jour pour améliorer votre expérience.</p>
-        </div>
-    </div>
-
-    <!-- 📱 MENU DU BAS -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="changerPage('Accueil', this)">
-            <div class="nav-icon">🏠</div>
-            <div>Accueil</div>
-        </div>
-        <div class="nav-item" onclick="changerPage('Messages', this)">
-            <div class="nav-icon">💬</div>
-            <div>Messages</div>
-        </div>
-        <div class="nav-item" onclick="changerPage('Videos', this)">
-            <div class="nav-icon">📹</div>
-            <div>Vidéos</div>
-        </div>
-        <div class="nav-item" onclick="changerPage('Infos', this)">
-            <div class="nav-icon">ℹ️</div>
-            <div>Infos</div>
-        </div>
-    </div>
-
-    <!-- 💰 TON ARGENT CACHÉ -->
-    <div class="creator-wallet">
-        💰 Ton revenu : <span id="soldeCrea">0</span> Ar
-        <small>À chaque clic / vue / message</small>
-    </div>
-
 
     <script>
-        let soldeCrea = 0;
+        let soldeCreateur = 0;
 
-        // 🚪 ENTRER DANS L'APP → +500 Ar
-        function entrer() {
+        // Connexion : +500 Ar
+        function seConnecter(type) {
             document.getElementById('loginScreen').style.display = 'none';
-            gagne(500);
+            soldeCreateur += 500;
+            majRevenu();
         }
 
-        // 🔄 CHANGER DE PAGE
+        // Changer de page : +100 Ar
         function changerPage(nom, el) {
-            // Cacher toutes pages
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Cacher toutes
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
             // Montrer la bonne
-            document.getElementById('page'+nom).classList.add('active');
-            // Activer bouton
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            // Gagner de l'argent à chaque changement
-            gagne(100);
+            document.getElementById(`page${nom}`).classList.remove('hidden');
+            // Style boutons
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-primary','font-semibold'));
+            el.classList.add('text-primary','font-semibold');
+            // Gain
+            soldeCreateur += 100;
+            majRevenu();
         }
 
-        // 📤 PUBLIER → +200 Ar
-        function publier() {
-            let texte = document.getElementById('textePub').value;
-            if(texte.trim() === '') return;
+        // Publier un message : +200 Ar, TOUT LE MONDE LE VOIT
+        function publierPost() {
+            const texte = document.getElementById('nouveauPost').value.trim();
+            if(!texte) return;
 
-            let feed = document.getElementById('filActus');
-            let post = document.createElement('div');
-            post.className = 'post';
-            post.innerHTML = `
-                <div class="publish-top"><div class="avatar">👤</div><div><b>Vous</b><br><small style="color:#65676b;">À l'instant</small></div></div>
-                <p>${texte}</p>
-                <div class="post-actions" onclick="gagne(100)">❤️ J'aime 💬 Commenter ↪️ Partager</div>
+            const fil = document.getElementById('filGlobal');
+            const nouveau = document.createElement('div');
+            nouveau.className = 'bg-white rounded-xl p-4 shadow-sm mb-3 animate-pulse';
+            nouveau.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">🌍</div>
+                    <span class="font-semibold">Utilisateur du monde</span>
+                    <span class="text-xs text-gray-400">à l'instant</span>
+                </div>
+                <p class="text-gray-800">${texte}</p>
+                <div class="flex gap-6 mt-3 text-gray-500 text-sm">
+                    <span onclick="gagner(50)">❤️ J'aime</span>
+                    <span onclick="gagner(50)">💬 Commenter</span>
+                    <span onclick="gagner(50)">↪️ Partager</span>
+                </div>
             `;
-            feed.prepend(post);
-            document.getElementById('textePub').value = '';
-
-            gagne(200);
+            // Ajouter EN HAUT : tout le monde le voit en premier
+            fil.prepend(nouveau);
+            // Vider
+            document.getElementById('nouveauPost').value = '';
+            // GAIN CRÉATEUR
+            soldeCreateur += 200;
+            majRevenu();
         }
 
-        // 💰 GAGNER DE L'ARGENT (TOUT SEUL)
-        function gagne(montant) {
-            soldeCrea += montant;
-            document.getElementById('soldeCrea').textContent = soldeCrea.toLocaleString();
+        // Gagner de l'argent
+        function gagner(montant) {
+            soldeCreateur += montant;
+            majRevenu();
+        }
+
+        // Mise à jour affichage
+        function majRevenu() {
+            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
         }
     </script>
 
 </body>
 </html>
-
