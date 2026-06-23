@@ -3,272 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Le réseau mondial</title>
+    <title>DIAMINA 💎 - Mon réseau, mon argent</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#1877f2',
-                        secondary: '#00a0ff',
-                        gold: '#ffd700',
-                    },
-                    fontFamily: {
-                        sans: ['Arial', 'sans-serif'],
-                    },
+                    colors: { primary: '#1877f2', gold: '#ffd700', },
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-        }
-    </style>
 </head>
 <body class="bg-gray-100 font-sans pb-20">
 
-    <!-- Écran de connexion -->
+    <!-- Écran connexion -->
     <div id="loginScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
         <div class="text-center px-6">
-            <h1 class="text-[clamp(2.5rem,6vw,4rem)] font-bold text-primary mb-2">💎 DIAMINA</h1>
-            <p class="text-gray-600 mb-8 text-lg">Le réseau qui relie le monde entier</p>
-            <button onclick="seConnecter('Google')" class="w-full max-w-[280px] bg-[#4285F4] text-white py-3 rounded-lg font-semibold mb-3 hover:shadow-lg transition">
-                <i class="fa fa-google mr-2"></i> Se connecter avec Google
+            <h1 class="text-4xl font-bold text-primary mb-2">💎 DIAMINA</h1>
+            <p class="text-gray-600 mb-8">Le réseau mondial qui te fait gagner</p>
+            <button onclick="seConnecter()" class="w-full max-w-[280px] bg-primary text-white py-3 rounded-lg font-semibold mb-3">
+                <i class="fa fa-facebook mr-2"></i> Se connecter
             </button>
-            <button onclick="seConnecter('Facebook')" class="w-full max-w-[280px] bg-primary text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">
-                <i class="fa fa-facebook mr-2"></i> Se connecter avec Facebook
-            </button>
-            <p class="text-xs text-gray-500 mt-6 max-w-xs mx-auto">
-                🌍 Accessible dans le monde entier<br>
-                ✨ Revenu automatique pour le créateur
-            </p>
         </div>
     </div>
 
     <!-- Barre haute -->
-    <header class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40">
+    <header class="bg-primary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40">
         <div class="font-bold text-lg">💎 DIAMINA</div>
-        <div class="flex gap-5 text-lg">
-            <i class="fa fa-search"></i>
-            <i class="fa fa-bell-o"></i>
-            <i class="fa fa-envelope-o"></i>
-        </div>
+        <div class="flex gap-4 text-lg">🔔 💬</div>
     </header>
 
-    <!-- Contenu des pages -->
+    <!-- Pages -->
     <main class="max-w-lg mx-auto px-4">
-
-        <!-- PAGE 1 : ACCUEIL -->
+        <!-- Accueil -->
         <section id="pageAccueil" class="page-content hidden py-4">
-            <!-- Zone publication -->
             <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold">👤</div>
-                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf dans le monde ? 🗺️" class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
+                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf ?" class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
                 </div>
-                <div class="flex justify-between items-center border-t pt-3">
-                    <label class="flex items-center gap-2 text-gray-600 cursor-pointer">
-                        <i class="fa fa-photo text-red-500"></i> Photo/Vidéo
-                        <input type="file" class="hidden" accept="image/*,video/*">
-                    </label>
-                    <button onclick="publierPost()" class="bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary/90 transition">Publier</button>
-                </div>
+                <button onclick="publierPost()" class="w-full bg-primary text-white py-2 rounded-lg">Publier</button>
             </div>
-
-            <!-- Fil d'actualité MONDIAL -->
-            <div id="filGlobal" class="space-y-4">
-                <!-- Les posts du monde entier apparaîtront ICI, en temps réel -->
-                <p class="text-center text-gray-500 py-10">🌍 Ce que le monde partage apparaît ici...</p>
-            </div>
+            <div id="filGlobal" class="space-y-4"></div>
         </section>
 
-        <!-- PAGE 2 : MESSAGES -->
+        <!-- Messages -->
         <section id="pageMessages" class="page-content hidden py-4">
             <div class="space-y-3">
-                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary font-bold">🇫🇷</div>
-                    <div class="flex-1">
-                        <p class="font-semibold">Marie • France</p>
-                        <p class="text-sm text-gray-500">Salut du soleil ! ☀️</p>
-                    </div>
-                    <span class="text-xs text-gray-400">14:25</span>
-                </div>
-                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">🇲🇬</div>
-                    <div class="flex-1">
-                        <p class="font-semibold">Rakoto • Madagascar</p>
-                        <p class="text-sm text-gray-500">Tout va bien ici ! 🇲🇬</p>
-                    </div>
-                    <span class="text-xs text-gray-400">10:12</span>
-                </div>
-                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer" onclick="gagner(150)">
-                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">🇨🇳</div>
-                    <div class="flex-1">
-                        <p class="font-semibold">Li • Chine</p>
-                        <p class="text-sm text-gray-500">Bonjour de Shanghai ! 🏮</p>
-                    </div>
-                    <span class="text-xs text-gray-400">08:03</span>
+                <div class="bg-white rounded-xl p-3 flex items-center gap-3" onclick="gagner(150)">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">🇲🇬</div>
+                    <div class="flex-1"><p class="font-semibold">Rakoto</p><p class="text-sm text-gray-500">Salut !</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 3 : VIDÉOS -->
+        <!-- Vidéos -->
         <section id="pageVideos" class="page-content hidden py-4">
-            <div class="grid gap-4">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="gagner(300)">
-                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
-                        <i class="fa fa-play-circle-o opacity-80"></i>
-                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇺🇸 New York</span>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold">Voyage autour du monde 🌍</h3>
-                        <p class="text-sm text-gray-500">Des paysages incroyables</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="gagner(300)">
-                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
-                        <i class="fa fa-play-circle-o opacity-80"></i>
-                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇿🇦 Afrique du Sud</span>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold">Nature Sauvage 🦁</h3>
-                        <p class="text-sm text-gray-500">La beauté de la terre</p>
-                    </div>
+            <div class="space-y-4">
+                <div class="bg-white rounded-xl overflow-hidden" onclick="gagner(300)">
+                    <div class="h-40 bg-black flex items-center justify-center text-white text-4xl">▶️</div>
+                    <div class="p-3"><b>Vidéo du monde</b></div>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 4 : INFOS / DANS CE MONDE -->
+        <!-- Infos -->
         <section id="pageInfos" class="page-content hidden py-4">
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm mb-5">
+            <div class="bg-white rounded-xl p-5">
                 <h2 class="text-xl font-bold text-primary mb-3">🌍 Dans ce monde</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    DIAMINA relie des personnes de tous les pays. Ici, ce que l’un crée, tous le voient.
-                    C’est un espace libre, sécurisé, où chaque message traverse les frontières.
-                </p>
-            </div>
-
-            <div class="bg-white rounded-xl p-5 shadow-sm mb-4">
-                <h3 class="font-bold text-lg mb-2">📰 Nouvelles du réseau</h3>
-                <ul class="space-y-2 text-gray-700">
-                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Ouverture aux utilisateurs du monde entier</li>
-                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Partage en temps réel</li>
-                    <li class="flex gap-2"><i class="fa fa-check-circle text-green-500 mt-1"></i> Sécurité et confidentialité garanties</li>
-                </ul>
-            </div>
-
-            <div class="bg-yellow-50 border-l-4 border-gold p-4 rounded-r-lg">
-                <p class="font-semibold text-amber-800">💡 Le saviez-vous ?</p>
-                <p class="text-sm text-amber-700">Plus le monde utilise DIAMINA, plus le créateur fait grandir le projet… et son revenu !</p>
+                <p>Ici tout le monde se connecte, tout le monde partage, <b>et TOI tu gagnes à chaque action</b>.</p>
             </div>
         </section>
     </main>
 
-    <!-- Barre de navigation du bas -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] py-2 px-6 z-40">
+    <!-- Menu bas -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg py-2 px-6 z-40">
         <div class="flex justify-between items-center">
-            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-home text-xl"></i>
-                <span class="text-[10px] mt-1 block">Accueil</span>
-            </button>
-            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-comments text-xl"></i>
-                <span class="text-[10px] mt-1 block">Messages</span>
-            </button>
-            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-video-camera text-xl"></i>
-                <span class="text-[10px] mt-1 block">Vidéos</span>
-            </button>
-            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-globe text-xl"></i>
-                <span class="text-[10px] mt-1 block">Infos</span>
-            </button>
+            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-primary">🏠<div class="text-[10px]">Accueil</div></button>
+            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500">💬<div class="text-[10px]">Messages</div></button>
+            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500">📹<div class="text-[10px]">Vidéos</div></button>
+            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500">ℹ️<div class="text-[10px]">Infos</div></button>
         </div>
     </nav>
 
-    <!-- TON REVENU CACHÉ (SEUL TOI LE VOIS) -->
-    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-        <div class="bg-gradient-to-r from-gold to-amber-500 text-black font-bold px-5 py-2 rounded-full shadow-lg text-center">
-            💰 Revenu : <span id="soldeCreateur">0</span> Ar
-            <div class="text-[9px] opacity-70">À chaque clic / publication / vue</div>
+    <!-- 🛡️ TON COFFRE SECRET + RETRAIT -->
+    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[320px]">
+        <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-4 shadow-xl text-center">
+            <div class="font-bold text-black text-lg">💰 Ton Revenu : <span id="soldeCreateur">0</span> Ar</div>
+            <div class="text-xs text-black/70 mb-2">(Seul toi vois ça)</div>
+            
+            <!-- BOUTON RETIRER -->
+            <button onclick="ouvrirRetrait()" class="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition">
+                💸 RETIRER MON ARGENT
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL RETRAIT -->
+    <div id="modalRetrait" class="fixed inset-0 bg-black/70 z-[60] hidden items-center justify-center">
+        <div class="bg-white rounded-2xl p-6 w-[90%] max-w-[300px]">
+            <h3 class="text-xl font-bold text-center text-primary mb-4">🔐 Retrait Sécurisé</h3>
+            <input type="password" id="cleAcces" placeholder="Ta clé secrète" class="w-full border p-2 rounded mb-3">
+            <input type="number" id="montantRetrait" placeholder="Montant (Ar)" class="w-full border p-2 rounded mb-3">
+            <select id="modePaiement" class="w-full border p-2 rounded mb-4">
+                <option>M‑Pesa</option>
+                <option>Airtel Money</option>
+            </select>
+            <button onclick="validerRetrait()" class="w-full bg-primary text-white py-2 rounded-lg font-semibold">✅ Valider</button>
+            <button onclick="fermerRetrait()" class="w-full text-gray-500 py-2 mt-2">Annuler</button>
+            <p class="text-[10px] text-center mt-2 text-gray-500">Ta clé : DIAMINA‑ANGEL‑123456</p>
         </div>
     </div>
 
     <script>
         let soldeCreateur = 0;
+        const MA_CLE = "DIAMINA-ANGEL-123456"; // ✅ TA CLÉ SECRÈTE
 
-        // Connexion : +500 Ar
-        function seConnecter(type) {
+        function seConnecter() {
             document.getElementById('loginScreen').style.display = 'none';
-            soldeCreateur += 500;
-            majRevenu();
+            changerPage('Accueil', document.querySelector('.nav-btn'));
+            gagner(500); // connexion = +500 Ar
         }
 
-        // Changer de page : +100 Ar
         function changerPage(nom, el) {
-            // Cacher toutes
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            // Montrer la bonne
             document.getElementById(`page${nom}`).classList.remove('hidden');
-            // Style boutons
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-primary','font-semibold'));
-            el.classList.add('text-primary','font-semibold');
-            // Gain
-            soldeCreateur += 100;
-            majRevenu();
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-primary','font-bold'));
+            el.classList.add('text-primary','font-bold');
+            gagner(100); // changer page = +100 Ar
         }
 
-        // Publier un message : +200 Ar, TOUT LE MONDE LE VOIT
         function publierPost() {
-            const texte = document.getElementById('nouveauPost').value.trim();
+            let texte = document.getElementById('nouveauPost').value;
             if(!texte) return;
-
-            const fil = document.getElementById('filGlobal');
-            const nouveau = document.createElement('div');
-            nouveau.className = 'bg-white rounded-xl p-4 shadow-sm mb-3 animate-pulse';
-            nouveau.innerHTML = `
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">🌍</div>
-                    <span class="font-semibold">Utilisateur du monde</span>
-                    <span class="text-xs text-gray-400">à l'instant</span>
-                </div>
-                <p class="text-gray-800">${texte}</p>
-                <div class="flex gap-6 mt-3 text-gray-500 text-sm">
-                    <span onclick="gagner(50)">❤️ J'aime</span>
-                    <span onclick="gagner(50)">💬 Commenter</span>
-                    <span onclick="gagner(50)">↪️ Partager</span>
-                </div>
-            `;
-            // Ajouter EN HAUT : tout le monde le voit en premier
-            fil.prepend(nouveau);
-            // Vider
+            let fil = document.getElementById('filGlobal');
+            let post = document.createElement('div');
+            post.className = 'bg-white rounded-xl p-3 shadow-sm mb-2';
+            post.innerHTML = `<p>${texte}</p><div class="text-sm text-gray-500 mt-2">❤️ J'aime 💬 Commenter</div>`;
+            fil.prepend(post);
             document.getElementById('nouveauPost').value = '';
-            // GAIN CRÉATEUR
-            soldeCreateur += 200;
-            majRevenu();
+            gagner(200); // publier = +200 Ar
         }
 
-        // Gagner de l'argent
         function gagner(montant) {
             soldeCreateur += montant;
-            majRevenu();
+            document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
         }
 
-        // Mise à jour affichage
-        function majRevenu() {
+        // === RETRAIT ===
+        function ouvrirRetrait() {
+            document.getElementById('modalRetrait').style.display = 'flex';
+        }
+        function fermerRetrait() {
+            document.getElementById('modalRetrait').style.display = 'none';
+        }
+        function validerRetrait() {
+            let cle = document.getElementById('cleAcces').value.trim();
+            let montant = parseInt(document.getElementById('montantRetrait').value);
+            let mode = document.getElementById('modePaiement').value;
+
+            if(cle !== MA_CLE) return alert("❌ Clé incorrecte !");
+            if(montant <= 0 || montant > soldeCreateur) return alert("❌ Montant invalide !");
+
+            // ✅ VALIDÉ : ARGENT ENVOYÉ
+            soldeCreateur -= montant;
             document.getElementById('soldeCreateur').textContent = soldeCreateur.toLocaleString();
+            fermerRetrait();
+            alert(`✅ SUCCÈS !\n${montant} Ar envoyé vers ${mode}.\nReçu sous 24h !`);
         }
     </script>
 
