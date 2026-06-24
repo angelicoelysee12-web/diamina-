@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -9,10 +9,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- ✅ BONNES LIBRAIRIES -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- ✅ BONNES BIBLIOTHÈQUES : COMPATIBLES ET BONNE VERSION -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js"></script>
 
     <script>
         tailwind.config = {
@@ -238,8 +239,14 @@
         </div>
     </div>
 
-    <script>
-        // ✅ CONFIGURATION EXACTE DE TON PROJET
+    <script type="module">
+        // ✅ IMPORT DES FONCTIONS
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, orderBy, query, onSnapshot, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+
+        // ✅ CONFIGURATION EXACTE DE TON PROJET : diamina-83677
         const firebaseConfig = {
           apiKey: "AIZaSyDDaBfNsXvoJ6j8qYp3hhnkTMMcbu5Yz9QU",
           authDomain: "diamina-83677.firebaseapp.com",
@@ -249,59 +256,62 @@
           appId: "1:85487795653:web:9107b280f69a2679695fac"
         };
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // ✅ INITIALISATION SÛRE
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
 
         const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
         let modeRetrait = "";
         let soldeCrea = 0;
 
         // === AFFICHAGE FORMULAIRES ===
-        function afficherInscription() {
+        window.afficherInscription = function() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
         }
-        function afficherConnexion() {
+        window.afficherConnexion = function() {
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
         }
 
         // === FONCTIONS AUTHENTIFICATION ===
-        function inscrireVrai() {
+        window.inscrireVrai = async function() {
             const nom = document.getElementById('regNom').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const pass = document.getElementById('regPass').value.trim();
 
             if(!nom || !email || pass.length <6) return alert("❌ Remplissez tout correctement (6 caractères min)");
 
-            auth.createUserWithEmailAndPassword(email, pass)
-            .then((userCredential) => {
-                return db.collection('utilisateurs').doc(userCredential.user.uid).set({
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                await addDoc(collection(db, "utilisateurs"), {
+                    uid: userCredential.user.uid,
                     nom: nom,
                     email: email,
-                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
+                    dateInscription: serverTimestamp(),
                     avatar: "👤"
                 });
-            })
-            .then(() => {
                 alert("✅ Compte créé ! Bienvenue sur DIAMINA !");
                 entrerDansApp();
-            })
-            .catch((error) => alert("❌ Erreur : " + error.message));
+            } catch (error) {
+                alert("❌ Erreur : " + error.message);
+            }
         }
 
-        function seConnecterVrai() {
+        window.seConnecterVrai = async function() {
             const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
             if(!email || !pass) return alert("❌ Entrez email et mot de passe");
 
-            auth.signInWithEmailAndPassword(email, pass)
-            .then(() => {
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
                 alert("✅ Connexion réussie !");
                 entrerDansApp();
-            })
-            .catch((error) => alert("❌ Erreur : " + error.message));
+            } catch (error) {
+                alert("❌ Erreur : " + error.message);
+            }
         }
 
         // === ENTRER DANS L'INTERFACE ===
@@ -317,7 +327,7 @@
         }
 
         // === NAVIGATION ===
-        function changerPage(nom, el) {
+        window.changerPage = function(nom, el) {
             document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
             document.getElementById(`page${nom}`).classList.remove('hidden');
             document.getElementById(`page${nom}`).classList.add('active');
@@ -330,31 +340,34 @@
         }
 
         // === PUBLICATIONS ===
-        function publierVrai() {
+        window.publierVrai = async function() {
             const texte = document.getElementById('nouveauPost').value.trim();
             if(!texte) return;
 
-            db.collection('publications').add({
-                auteur: auth.currentUser.email,
-                nomAuteur: auth.currentUser.displayName || "Utilisateur",
-                texte: texte,
-                date: firebase.firestore.FieldValue.serverTimestamp(),
-                likes: 0
-            })
-            .then(() => {
+            try {
+                await addDoc(collection(db, "publications"), {
+                    auteur: auth.currentUser.email,
+                    nomAuteur: auth.currentUser.displayName || "Utilisateur",
+                    texte: texte,
+                    date: serverTimestamp(),
+                    likes: 0
+                });
                 document.getElementById('nouveauPost').value = '';
                 soldeCrea += 50;
                 majSolde();
-            });
+            } catch (error) {
+                alert("❌ Erreur publication : " + error.message);
+            }
         }
 
         function chargerPublications() {
-            db.collection('publications').orderBy('date', 'desc').onSnapshot((snapshot) => {
+            const q = query(collection(db, "publications"), orderBy("date", "desc"));
+            onSnapshot(q, (snapshot) => {
                 const fil = document.getElementById('filGlobal');
                 fil.innerHTML = '';
 
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
                     const postEl = document.createElement('div');
                     postEl.className = 'bg-white rounded-xl p-4 shadow-sm mb-3';
                     postEl.innerHTML = `
@@ -367,7 +380,7 @@
                         </div>
                         <p class="text-gray-800 mb-3">${data.texte}</p>
                         <div class="flex gap-6 text-gray-500 text-sm">
-                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${doc.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
+                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${docSnap.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
                             <span class="cursor-pointer hover:text-primary">💬 Commenter</span>
                             <span class="cursor-pointer hover:text-primary">↪️ Partager</span>
                         </div>
@@ -379,25 +392,30 @@
             });
         }
 
-        function aimerPost(id, actuel) {
-            db.collection('publications').doc(id).update({likes: actuel + 1});
-            soldeCrea += 5;
-            majSolde();
+        window.aimerPost = async function(id, actuel) {
+            try {
+                const ref = doc(db, "publications", id);
+                await updateDoc(ref, {likes: actuel + 1});
+                soldeCrea += 5;
+                majSolde();
+            } catch (error) {
+                console.error("Erreur like :", error);
+            }
         }
 
         // === RETRAIT ===
-        function ouvrirRetrait(type) {
+        window.ouvrirRetrait = function(type) {
             modeRetrait = type;
             document.getElementById('titreRetrait').innerText = `💸 Retrait par ${type}`;
             document.getElementById('modalRetrait').style.display = 'flex';
         }
-        function fermerRetrait() {
+        window.fermerRetrait = function() {
             document.getElementById('modalRetrait').style.display = 'none';
             document.getElementById('montantRetrait').value = '';
             document.getElementById('compteRetrait').value = '';
             document.getElementById('cleAcces').value = '';
         }
-        function validerRetrait() {
+        window.validerRetrait = function() {
             const cle = document.getElementById('cleAcces').value.trim();
             const montant = parseInt(document.getElementById('montantRetrait').value);
             const compte = document.getElementById('compteRetrait').value.trim();
@@ -417,8 +435,13 @@
             document.getElementById('soldeCrea').innerText = soldeCrea.toLocaleString() + " Ar";
         }
 
-        function deconnexion() {
-            auth.signOut().then(() => location.reload());
+        window.deconnexion = async function() {
+            try {
+                await signOut(auth);
+                location.reload();
+            } catch (error) {
+                alert("❌ Erreur déconnexion : " + error.message);
+            }
         }
     </script>
 
