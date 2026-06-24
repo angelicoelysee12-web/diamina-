@@ -3,13 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Réseau Social</title>
+    <title>DIAMINA 💎 - Réseau Social Mondial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- ✅ LIENS FIREBASE OFFICIELS -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+    <!-- ✅ BONS LIENS FIREBASE (version modulaire, adaptée à ton code) -->
+    <script type="module">
+        // Import des fonctions Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, orderBy, query, onSnapshot, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+
+        // ✅ TA NOUVELLE CONFIGURATION FIREBASE
+        const firebaseConfig = {
+          apiKey: "AIzaSyAromnB7EZNw6dcK6ZlPqP_RSmR5220Tm4",
+          authDomain: "diamina-reel.firebaseapp.com",
+          projectId: "diamina-reel",
+          storageBucket: "diamina-reel.firebasestorage.app",
+          messagingSenderId: "231259972522",
+          appId: "1:231259972522:web:56253de02a1eabb28c01d3",
+          measurementId: "G-859XXBS7LE"
+        };
+
+        // Initialisation
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Variables globales
+        const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
+        let modeRetrait = "";
+        let soldeCrea = 0;
+
+        // === AFFICHAGE FORMULAIRES ===
+        window.afficherInscription = function() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+        window.afficherConnexion = function() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        // === FONCTIONS AUTHENTIFICATION ===
+        window.inscrireVrai = async function() {
+            const nom = document.getElementById('regNom').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+
+            if(!nom || !email || pass.length <6) return alert("❌ Remplissez tout correctement (6 caractères min)");
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                await addDoc(collection(db, "utilisateurs"), {
+                    uid: userCredential.user.uid,
+                    nom: nom,
+                    email: email,
+                    dateInscription: serverTimestamp(),
+                    avatar: "👤"
+                });
+                alert("✅ Compte créé ! Bienvenue sur DIAMINA !");
+                entrerDansApp();
+            } catch (error) {
+                alert("❌ Erreur : " + error.message);
+            }
+        }
+
+        window.seConnecterVrai = async function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if(!email || !pass) return alert("❌ Entrez email et mot de passe");
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                alert("✅ Connexion réussie !");
+                entrerDansApp();
+            } catch (error) {
+                alert("❌ Erreur : " + error.message);
+            }
+        }
+
+        // === ENTRER DANS L'INTERFACE ===
+        function entrerDansApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('mainNav').classList.remove('hidden');
+            
+            soldeCrea += 100;
+            majSolde();
+            chargerPublications();
+        }
+
+        // === NAVIGATION ===
+        window.changerPage = function(nom, el) {
+            document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
+            document.getElementById(`page${nom}`).classList.remove('hidden');
+            document.getElementById(`page${nom}`).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary', 'font-semibold'); b.classList.add('text-gray-500');});
+            el.classList.remove('text-gray-500'); el.classList.add('text-primary', 'font-semibold');
+
+            soldeCrea += 20;
+            majSolde();
+        }
+
+        // === PUBLICATIONS ===
+        window.publierVrai = async function() {
+            const texte = document.getElementById('nouveauPost').value.trim();
+            if(!texte) return;
+
+            try {
+                await addDoc(collection(db, "publications"), {
+                    auteur: auth.currentUser.email,
+                    nomAuteur: auth.currentUser.displayName || "Utilisateur",
+                    texte: texte,
+                    date: serverTimestamp(),
+                    likes: 0
+                });
+                document.getElementById('nouveauPost').value = '';
+                soldeCrea += 50;
+                majSolde();
+            } catch (error) {
+                alert("❌ Erreur publication : " + error.message);
+            }
+        }
+
+        function chargerPublications() {
+            const q = query(collection(db, "publications"), orderBy("date", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const fil = document.getElementById('filGlobal');
+                fil.innerHTML = '';
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const postEl = document.createElement('div');
+                    postEl.className = 'bg-white rounded-xl p-4 shadow-sm mb-3';
+                    postEl.innerHTML = `
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">👤</div>
+                            <div>
+                                <p class="font-semibold text-sm">${data.auteur.split('@')[0]}</p>
+                                <p class="text-[10px] text-gray-500">à l'instant</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-800 mb-3">${data.texte}</p>
+                        <div class="flex gap-6 text-gray-500 text-sm">
+                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${docSnap.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
+                            <span class="cursor-pointer hover:text-primary">💬 Commenter</span>
+                            <span class="cursor-pointer hover:text-primary">↪️ Partager</span>
+                        </div>
+                    `;
+                    fil.appendChild(postEl);
+                    soldeCrea += 1;
+                    majSolde();
+                });
+            });
+        }
+
+        window.aimerPost = async function(id, actuel) {
+            try {
+                const ref = doc(db, "publications", id);
+                await updateDoc(ref, {likes: actuel + 1});
+                soldeCrea += 5;
+                majSolde();
+            } catch (error) {
+                console.error("Erreur like :", error);
+            }
+        }
+
+        // === RETRAIT ===
+        window.ouvrirRetrait = function(type) {
+            modeRetrait = type;
+            document.getElementById('titreRetrait').innerText = `💸 Retrait par ${type}`;
+            document.getElementById('modalRetrait').style.display = 'flex';
+        }
+        window.fermerRetrait = function() {
+            document.getElementById('modalRetrait').style.display = 'none';
+            document.getElementById('montantRetrait').value = '';
+            document.getElementById('compteRetrait').value = '';
+            document.getElementById('cleAcces').value = '';
+        }
+        window.validerRetrait = function() {
+            const cle = document.getElementById('cleAcces').value.trim();
+            const montant = parseInt(document.getElementById('montantRetrait').value);
+            const compte = document.getElementById('compteRetrait').value.trim();
+
+            if(cle !== MA_CLE_SECRETE) return alert("❌ CLÉ D'ACCÈS INCORRECTE ! Accès refusé.");
+            if(!montant || montant <=0 || montant > soldeCrea) return alert("❌ Montant invalide ou insuffisant.");
+            if(!compte) return alert("❌ Entrez votre numéro ou compte.");
+
+            soldeCrea -= montant;
+            majSolde();
+            fermerRetrait();
+
+            alert(`✅ RETRAIT RÉUSSI !\n\n💸 ${montant} Ar\n📨 Vers : ${modeRetrait}\n📇 Compte : ${compte}\n\nReçu sous 24h ! 🚀`);
+        }
+
+        function majSolde() {
+            document.getElementById('soldeCrea').innerText = soldeCrea.toLocaleString() + " Ar";
+        }
+
+        window.deconnexion = async function() {
+            try {
+                await signOut(auth);
+                location.reload();
+            } catch (error) {
+                alert("❌ Erreur déconnexion : " + error.message);
+            }
+        }
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -233,190 +439,6 @@
             <p class="text-[9px] text-center mt-3 text-gray-500">Clé unique : DIAMINA‑ANGEL‑777‑SECURE</p>
         </div>
     </div>
-
-    <script>
-        // ✅ TA CONFIGURATION UNIQUE FIREBASE (récupérée à l'instant)
-        const firebaseConfig = {
-          apiKey: "AIzaSyDDaBFNsXvoJ6j8qYp3hhkTMMcbu5Yz9QU",
-          authDomain: "diamina-83677.firebaseapp.com",
-          projectId: "diamina-83677",
-          storageBucket: "diamina-83677.firebasestorage.app",
-          messagingSenderId: "85487795653",
-          appId: "1:85487795653:web:b1bb712e1d2244b3695fac"
-        };
-
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
-        let modeRetrait = "";
-        let soldeCrea = 0;
-
-        // === AFFICHAGE FORMULAIRES ===
-        function afficherInscription() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.remove('hidden');
-        }
-        function afficherConnexion() {
-            document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
-        }
-
-        // === FONCTIONS AUTHENTIFICATION ===
-        function inscrireVrai() {
-            const nom = document.getElementById('regNom').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-
-            if(!nom || !email || pass.length <6) return alert("❌ Remplissez tout correctement (6 caractères min)");
-
-            auth.createUserWithEmailAndPassword(email, pass)
-            .then((userCredential) => {
-                return db.collection('utilisateurs').doc(userCredential.user.uid).set({
-                    nom: nom,
-                    email: email,
-                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
-                    avatar: "👤"
-                });
-            })
-            .then(() => {
-                alert("✅ Compte créé ! Bienvenue sur DIAMINA !");
-                entrerDansApp();
-            })
-            .catch((error) => alert("❌ Erreur : " + error.message));
-        }
-
-        function seConnecterVrai() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-            if(!email || !pass) return alert("❌ Entrez email et mot de passe");
-
-            auth.signInWithEmailAndPassword(email, pass)
-            .then(() => {
-                alert("✅ Connexion réussie !");
-                entrerDansApp();
-            })
-            .catch((error) => alert("❌ Erreur : " + error.message));
-        }
-
-        // === ENTRER DANS L'INTERFACE ===
-        function entrerDansApp() {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainHeader').classList.remove('hidden');
-            document.getElementById('mainContent').classList.remove('hidden');
-            document.getElementById('mainNav').classList.remove('hidden');
-            
-            soldeCrea += 100;
-            majSolde();
-            chargerPublications();
-        }
-
-        // === NAVIGATION ===
-        function changerPage(nom, el) {
-            document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
-            document.getElementById(`page${nom}`).classList.remove('hidden');
-            document.getElementById(`page${nom}`).classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary', 'font-semibold'); b.classList.add('text-gray-500');});
-            el.classList.remove('text-gray-500'); el.classList.add('text-primary', 'font-semibold');
-
-            soldeCrea += 20;
-            majSolde();
-        }
-
-        // === PUBLICATIONS ===
-        function publierVrai() {
-            const texte = document.getElementById('nouveauPost').value.trim();
-            if(!texte) return;
-
-            db.collection('publications').add({
-                auteur: auth.currentUser.email,
-                nomAuteur: auth.currentUser.displayName || "Utilisateur",
-                texte: texte,
-                date: firebase.firestore.FieldValue.serverTimestamp(),
-                likes: 0
-            })
-            .then(() => {
-                document.getElementById('nouveauPost').value = '';
-                soldeCrea += 50;
-                majSolde();
-            });
-        }
-
-        function chargerPublications() {
-            db.collection('publications').orderBy('date', 'desc').onSnapshot((snapshot) => {
-                const fil = document.getElementById('filGlobal');
-                fil.innerHTML = '';
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const postEl = document.createElement('div');
-                    postEl.className = 'bg-white rounded-xl p-4 shadow-sm mb-3';
-                    postEl.innerHTML = `
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">👤</div>
-                            <div>
-                                <p class="font-semibold text-sm">${data.auteur.split('@')[0]}</p>
-                                <p class="text-[10px] text-gray-500">à l'instant</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-800 mb-3">${data.texte}</p>
-                        <div class="flex gap-6 text-gray-500 text-sm">
-                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${doc.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
-                            <span class="cursor-pointer hover:text-primary">💬 Commenter</span>
-                            <span class="cursor-pointer hover:text-primary">↪️ Partager</span>
-                        </div>
-                    `;
-                    fil.appendChild(postEl);
-                    soldeCrea += 1;
-                    majSolde();
-                });
-            });
-        }
-
-        function aimerPost(id, actuel) {
-            db.collection('publications').doc(id).update({likes: actuel + 1});
-            soldeCrea += 5;
-            majSolde();
-        }
-
-        // === RETRAIT ===
-        function ouvrirRetrait(type) {
-            modeRetrait = type;
-            document.getElementById('titreRetrait').innerText = `💸 Retrait par ${type}`;
-            document.getElementById('modalRetrait').style.display = 'flex';
-        }
-        function fermerRetrait() {
-            document.getElementById('modalRetrait').style.display = 'none';
-            document.getElementById('montantRetrait').value = '';
-            document.getElementById('compteRetrait').value = '';
-            document.getElementById('cleAcces').value = '';
-        }
-        function validerRetrait() {
-            const cle = document.getElementById('cleAcces').value.trim();
-            const montant = parseInt(document.getElementById('montantRetrait').value);
-            const compte = document.getElementById('compteRetrait').value.trim();
-
-            if(cle !== MA_CLE_SECRETE) return alert("❌ CLÉ D'ACCÈS INCORRECTE ! Accès refusé.");
-            if(!montant || montant <=0 || montant > soldeCrea) return alert("❌ Montant invalide ou insuffisant.");
-            if(!compte) return alert("❌ Entrez votre numéro ou compte.");
-
-            soldeCrea -= montant;
-            majSolde();
-            fermerRetrait();
-
-            alert(`✅ RETRAIT RÉUSSI !\n\n💸 ${montant} Ar\n📨 Vers : ${modeRetrait}\n📇 Compte : ${compte}\n\nReçu sous 24h ! 🚀`);
-        }
-
-        function majSolde() {
-            document.getElementById('soldeCrea').innerText = soldeCrea.toLocaleString() + " Ar";
-        }
-
-        function deconnexion() {
-            auth.signOut().then(() => location.reload());
-        }
-    </script>
 
 </body>
 </html>
