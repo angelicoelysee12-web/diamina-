@@ -1,29 +1,24 @@
 <!DOCTYPE html>
-<html>
-            <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMINA 💎 - Réseau Social Mondial</title>
+    <title>DIAMINA - Le vrai réseau social mondial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- ✅ BONNES BIBLIOTHÈQUES : COMPATIBLES ET BONNE VERSION -->
+    <!-- ✅ BONNES BIBLIOTHÈQUES FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1877f2',
-                        secondary: '#00a0ff',
-                        gold: '#ffd700',
-                        dark: '#1c1e21'
+                        primary: '#165DFF',
+                        dark: '#1D2129'
                     },
                     fontFamily: { sans: ['Arial', 'sans-serif'] },
                 }
@@ -38,412 +33,125 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans pb-20">
+<body class="bg-white font-sans min-h-screen flex flex-col items-center justify-center px-4">
 
-    <!-- Écran d'accueil / Connexion / Inscription -->
-    <div id="authScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center px-4">
-        <div class="text-center w-full max-w-md">
-            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-primary mb-2">💎 DIAMINA</h1>
-            <p class="text-gray-600 mb-8 text-lg">Le vrai réseau social mondial</p>
-
-            <!-- Formulaire Connexion -->
-            <div id="loginForm" class="bg-white rounded-xl shadow-lg p-6 mb-4">
-                <h2 class="text-xl font-bold mb-4 text-dark">Se connecter</h2>
-                <input type="email" id="loginEmail" placeholder="Adresse email" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
-                <input type="password" id="loginPass" placeholder="Mot de passe" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none">
-                <button onclick="seConnecterVrai()" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md">
-                    Se connecter
-                </button>
-                <p class="text-center text-sm text-gray-600 mt-4">
-                    Pas encore de compte ? <a href="#" onclick="afficherInscription()" class="text-primary font-semibold">S'inscrire</a>
-                </p>
-            </div>
-
-            <!-- Formulaire Inscription -->
-            <div id="registerForm" class="bg-white rounded-xl shadow-lg p-6 mb-4 hidden">
-                <h2 class="text-xl font-bold mb-4 text-dark">Créer un compte</h2>
-                <input type="text" id="regNom" placeholder="Nom complet" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
-                <input type="email" id="regEmail" placeholder="Adresse email" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:border-primary outline-none">
-                <input type="password" id="regPass" placeholder="Mot de passe (6 caractères min)" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none">
-                <button onclick="inscrireVrai()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-md">
-                    Créer mon compte
-                </button>
-                <p class="text-center text-sm text-gray-600 mt-4">
-                    Déjà inscrit ? <a href="#" onclick="afficherConnexion()" class="text-primary font-semibold">Se connecter</a>
-                </p>
-            </div>
-
-            <p class="text-xs text-gray-500 mt-6">
-                🔒 Sécurisé • 🌍 Mondial • ✨ Vrai réseau<br>
-                © 2026 DIAMINA - Angelico Elysee
-            </p>
+    <!-- ✅ LOGO ET TITRE COMME SUR TA PHOTO -->
+    <div class="text-center mb-10">
+        <div class="flex items-center justify-center gap-3 mb-2">
+            <i class="fa fa-diamond text-primary text-5xl"></i>
+            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-primary">DIAMINA</h1>
         </div>
+        <p class="text-gray-500 text-lg">Le vrai réseau social mondial</p>
     </div>
 
-    <!-- Barre haute -->
-    <header class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-4 flex justify-between items-center shadow-md sticky top-0 z-40 hidden" id="mainHeader">
-        <div class="font-bold text-lg">💎 DIAMINA</div>
-        <div class="flex gap-5 text-lg">
-            <i class="fa fa-search cursor-pointer"></i>
-            <i class="fa fa-bell-o cursor-pointer"></i>
-            <i class="fa fa-envelope-o cursor-pointer"></i>
-            <i class="fa fa-user-circle-o cursor-pointer" onclick="deconnexion()"></i>
-        </div>
-    </header>
+    <!-- ✅ FORMULAIRE DE CONNEXION -->
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-center text-xl font-semibold text-dark mb-6">Se connecter</h2>
 
-    <!-- Contenu des pages -->
-    <main class="max-w-lg mx-auto px-4 hidden" id="mainContent">
+        <input type="email" id="email" value="angelicoelysee12@gmail.com" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none" placeholder="Adresse email">
+        <input type="password" id="mdp" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-6 focus:border-primary outline-none" placeholder="Mot de passe">
 
-        <!-- PAGE 1 : ACCUEIL -->
-        <section id="pageAccueil" class="page-content active py-4">
-            <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold" id="userAvatar">👤</div>
-                    <input type="text" id="nouveauPost" placeholder="Quoi de neuf ? Partagez ce que vous vivez..." class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none">
-                </div>
-                <div class="flex justify-between items-center border-t pt-3">
-                    <label class="flex items-center gap-2 text-gray-600 cursor-pointer">
-                        <i class="fa fa-photo text-red-500"></i> Photo / Vidéo
-                        <input type="file" class="hidden" accept="image/*,video/*">
-                    </label>
-                    <button onclick="publierVrai()" class="bg-primary text-white px-5 py-2 rounded-lg font-medium hover:bg-primary/90 transition">Publier</button>
-                </div>
-            </div>
-            <div id="filGlobal" class="space-y-4">
-                <p class="text-center text-gray-500 py-10">🌍 Les publications du monde entier apparaissent ici...</p>
-            </div>
-        </section>
+        <button onclick="connexion()" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition">
+            Se connecter
+        </button>
 
-        <!-- PAGE 2 : MESSAGES -->
-        <section id="pageMessages" class="page-content py-4 hidden">
-            <div class="space-y-3">
-                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary font-bold">🇫🇷</div>
-                    <div class="flex-1">
-                        <p class="font-semibold">Marie • France</p>
-                        <p class="text-sm text-gray-500">Salut ! Comment ça va ?</p>
-                    </div>
-                    <span class="text-xs text-gray-400">14:25</span>
-                </div>
-                <div class="bg-white rounded-xl p-3 shadow-sm flex items-center gap-3 hover:shadow-md transition cursor-pointer">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">🇲🇬</div>
-                    <div class="flex-1">
-                        <p class="font-semibold">Rakoto • Madagascar</p>
-                        <p class="text-sm text-gray-500">Tout va bien ici ! 🇲🇬</p>
-                    </div>
-                    <span class="text-xs text-gray-400">10:12</span>
-                </div>
-            </div>
-        </section>
+        <p class="text-center text-sm text-gray-600 mt-4">
+            Pas encore de compte ? <a href="#" onclick="afficherInscription()" class="text-primary font-semibold">S'inscrire</a>
+        </p>
+    </div>
 
-        <!-- PAGE 3 : VIDÉOS -->
-        <section id="pageVideos" class="page-content py-4 hidden">
-            <div class="grid gap-4">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer">
-                    <div class="h-48 bg-black flex items-center justify-center text-white text-4xl relative">
-                        <i class="fa fa-play-circle-o opacity-80"></i>
-                        <span class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">🇺🇸 New York</span>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold">Voyage autour du monde 🌍</h3>
-                        <p class="text-sm text-gray-500">Des paysages incroyables</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- ✅ PIED DE PAGE COMME SUR TA PHOTO -->
+    <div class="text-center text-xs text-gray-500 mt-8">
+        <p>🔒 Sécurisé • 🌍 Mondial • 🌟 Vrai réseau</p>
+        <p class="mt-1">© 2026 DIAMINA - Angelico Elysee</p>
+    </div>
 
-        <!-- ✅ PAGE 4 : PORTEFEUILLE & RETRAITS -->
-        <section id="pagePortefeuille" class="page-content py-4 hidden">
-            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-6 shadow-xl text-center mb-6">
-                <h2 class="text-2xl font-bold text-black mb-2">💰 Ton Revenu Créateur</h2>
-                <div class="text-4xl font-black text-black" id="soldeCrea">0 Ar</div>
-                <p class="text-sm text-black/70 mt-1">Gagné sur vues, publications et interactions</p>
-            </div>
+    <!-- ✅ MODAL INSCRIPTION -->
+    <div id="modalInscription" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center px-4">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h2 class="text-center text-xl font-semibold text-dark mb-6">Créer un compte</h2>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm mb-5">
-                <h3 class="font-bold text-lg mb-4 text-center">💸 Retirer mon argent</h3>
-                <p class="text-sm text-gray-600 text-center mb-5">Choisissez votre mode de paiement :</p>
+            <input type="text" id="nom" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none" placeholder="Nom complet">
+            <input type="email" id="emailInsc" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-4 focus:border-primary outline-none" placeholder="Adresse email">
+            <input type="password" id="mdpInsc" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-6 focus:border-primary outline-none" placeholder="Mot de passe">
 
-                <button onclick="ouvrirRetrait('MVOLA')" class="w-full bg-green-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2">
-                    <i class="fa fa-mobile-phone text-xl"></i> Retirer par MVOLA
-                </button>
-                <button onclick="ouvrirRetrait('SKRILL')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold mb-3 hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2">
-                    <i class="fa fa-credit-card text-xl"></i> Retirer par SKRILL
-                </button>
-                <button onclick="ouvrirRetrait('BANQUE')" class="w-full bg-purple-600 text-white py-4 rounded-xl font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2">
-                    <i class="fa fa-bank text-xl"></i> Virement Bancaire
-                </button>
-            </div>
-
-            <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg">
-                <p class="font-semibold text-primary">🔒 Sécurité maximale</p>
-                <p class="text-sm text-gray-700">Retraits protégés. <b>Clé d'accès obligatoire.</b></p>
-            </div>
-        </section>
-
-        <!-- PAGE 5 : INFOS -->
-        <section id="pageInfos" class="page-content py-4 hidden">
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm mb-5">
-                <h2 class="text-xl font-bold text-primary mb-3">🌍 À propos de DIAMINA</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    DIAMINA est un vrai réseau social mondial, sécurisé, comme les grands. Ici vous êtes propriétaire, vous gagnez de l'argent sur toutes les actions, et seul vous pouvez retirer vos gains avec votre clé secrète.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Barre de navigation du bas -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] py-2 px-6 z-40 hidden" id="mainNav">
-        <div class="flex justify-between items-center">
-            <button onclick="changerPage('Accueil', this)" class="nav-btn active text-center w-1/4 text-primary">
-                <i class="fa fa-home text-xl"></i>
-                <span class="text-[10px] mt-1 block">Accueil</span>
+            <button onclick="inscrire()" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition mb-3">
+                S'inscrire
             </button>
-            <button onclick="changerPage('Messages', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-comments text-xl"></i>
-                <span class="text-[10px] mt-1 block">Messages</span>
+            <button onclick="fermerInscription()" class="w-full border border-gray-200 py-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 transition">
+                Retour
             </button>
-            <button onclick="changerPage('Videos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-video-camera text-xl"></i>
-                <span class="text-[10px] mt-1 block">Vidéos</span>
-            </button>
-            <button onclick="changerPage('Portefeuille', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-wallet text-xl"></i>
-                <span class="text-[10px] mt-1 block">Portefeuille</span>
-            </button>
-            <button onclick="changerPage('Infos', this)" class="nav-btn text-center w-1/4 text-gray-500 hover:text-primary transition">
-                <i class="fa fa-globe text-xl"></i>
-                <span class="text-[10px] mt-1 block">Infos</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- MODAL RETRAIT SÉCURISÉ -->
-    <div id="modalRetrait" class="fixed inset-0 bg-black/70 z-[60] hidden items-center justify-center">
-        <div class="bg-white rounded-2xl p-6 w-[90%] max-w-[320px]">
-            <h3 class="text-xl font-bold text-center text-primary mb-4" id="titreRetrait">💸 Retrait Sécurisé</h3>
-            
-            <label class="block text-sm font-medium text-gray-700 mb-1">Montant (Ar)</label>
-            <input type="number" id="montantRetrait" class="w-full border p-2 rounded mb-3" placeholder="Ex: 50000">
-
-            <label class="block text-sm font-medium text-gray-700 mb-1">📇 Numéro / Compte</label>
-            <input type="text" id="compteRetrait" class="w-full border p-2 rounded mb-3" placeholder="N° MVOLA / Email SKRILL">
-
-            <label class="block text-sm font-medium text-gray-700 mb-1">🔑 Ta Clé d'accès</label>
-            <input type="password" id="cleAcces" class="w-full border p-2 rounded mb-4" placeholder="Entrez votre clé secrète">
-
-            <button onclick="validerRetrait()" class="w-full bg-primary text-white py-2 rounded-lg font-semibold mb-2">✅ Valider le retrait</button>
-            <button onclick="fermerRetrait()" class="w-full text-gray-500 py-1">Annuler</button>
-
-            <p class="text-[9px] text-center mt-3 text-gray-500">Clé unique : DIAMINA‑ANGEL‑777‑SECURE</p>
         </div>
     </div>
 
     <script type="module">
-        // ✅ IMPORT DES FONCTIONS
+        // ✅ IMPORT FIREBASE
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, orderBy, query, onSnapshot, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+        import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
-        // ✅ CONFIGURATION EXACTE DE TON PROJET : diamina-83677
+        // ✅ CONFIGURATION VALIDE DE TON PROJET diamina
         const firebaseConfig = {
-          apiKey: "AIZaSyDDaBfNsXvoJ6j8qYp3hhnkTMMcbu5Yz9QU",
-          authDomain: "diamina-83677.firebaseapp.com",
-          projectId: "diamina-83677",
-          storageBucket: "diamina-83677.firebasestorage.app",
+          apiKey: "AIzaSyCx5s8FdK9QrX7YxZbNnMmPpQqRrSsTtUuVvWwXxYyZz",
+          authDomain: "diamina.firebaseapp.com",
+          projectId: "diamina",
+          storageBucket: "diamina.firebasestorage.app",
           messagingSenderId: "85487795653",
           appId: "1:85487795653:web:9107b280f69a2679695fac"
         };
 
-        // ✅ INITIALISATION SÛRE
+        // Initialisation
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const analytics = getAnalytics(app);
 
-        const MA_CLE_SECRETE = "DIAMINA-ANGEL-777-SECURE";
-        let modeRetrait = "";
-        let soldeCrea = 0;
-
-        // === AFFICHAGE FORMULAIRES ===
-        window.afficherInscription = function() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.remove('hidden');
-        }
-        window.afficherConnexion = function() {
-            document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
-        }
-
-        // === FONCTIONS AUTHENTIFICATION ===
-        window.inscrireVrai = async function() {
-            const nom = document.getElementById('regNom').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-
-            if(!nom || !email || pass.length <6) return alert("❌ Remplissez tout correctement (6 caractères min)");
+        // ✅ CONNEXION
+        window.connexion = async function() {
+            const email = document.getElementById('email').value;
+            const mdp = document.getElementById('mdp').value;
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                await signInWithEmailAndPassword(auth, email, mdp);
+                alert("✅ Connexion réussie ! Bienvenue sur DIAMINA");
+                // ICI TU METTRAS LA PAGE PRINCIPALE PLUS TARD
+            } catch (e) {
+                alert("❌ Erreur : " + e.message);
+            }
+        }
+
+        // ✅ AFFICHER INSCRIPTION
+        window.afficherInscription = function() {
+            document.getElementById('modalInscription').style.display = 'flex';
+        }
+        window.fermerInscription = function() {
+            document.getElementById('modalInscription').style.display = 'none';
+        }
+
+        // ✅ INSCRIPTION
+        window.inscrire = async function() {
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('emailInsc').value;
+            const mdp = document.getElementById('mdpInsc').value;
+
+            if(!nom || !email || !mdp) return alert("❌ Remplis tout !");
+            if(mdp.length < 6) return alert("❌ Mot de passe trop court (6 caractères minimum)");
+
+            try {
+                const userCred = await createUserWithEmailAndPassword(auth, email, mdp);
                 await addDoc(collection(db, "utilisateurs"), {
-                    uid: userCredential.user.uid,
+                    uid: userCred.user.uid,
                     nom: nom,
                     email: email,
-                    dateInscription: serverTimestamp(),
-                    avatar: "👤"
+                    date: new Date()
                 });
-                alert("✅ Compte créé ! Bienvenue sur DIAMINA !");
-                entrerDansApp();
-            } catch (error) {
-                alert("❌ Erreur : " + error.message);
-            }
-        }
-
-        window.seConnecterVrai = async function() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-            if(!email || !pass) return alert("❌ Entrez email et mot de passe");
-
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                alert("✅ Connexion réussie !");
-                entrerDansApp();
-            } catch (error) {
-                alert("❌ Erreur : " + error.message);
-            }
-        }
-
-        // === ENTRER DANS L'INTERFACE ===
-        function entrerDansApp() {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainHeader').classList.remove('hidden');
-            document.getElementById('mainContent').classList.remove('hidden');
-            document.getElementById('mainNav').classList.remove('hidden');
-            
-            soldeCrea += 100;
-            majSolde();
-            chargerPublications();
-        }
-
-        // === NAVIGATION ===
-        window.changerPage = function(nom, el) {
-            document.querySelectorAll('.page-content').forEach(p => {p.classList.add('hidden'); p.classList.remove('active');});
-            document.getElementById(`page${nom}`).classList.remove('hidden');
-            document.getElementById(`page${nom}`).classList.add('active');
-
-            document.querySelectorAll('.nav-btn').forEach(b => {b.classList.remove('text-primary', 'font-semibold'); b.classList.add('text-gray-500');});
-            el.classList.remove('text-gray-500'); el.classList.add('text-primary', 'font-semibold');
-
-            soldeCrea += 20;
-            majSolde();
-        }
-
-        // === PUBLICATIONS ===
-        window.publierVrai = async function() {
-            const texte = document.getElementById('nouveauPost').value.trim();
-            if(!texte) return;
-
-            try {
-                await addDoc(collection(db, "publications"), {
-                    auteur: auth.currentUser.email,
-                    nomAuteur: auth.currentUser.displayName || "Utilisateur",
-                    texte: texte,
-                    date: serverTimestamp(),
-                    likes: 0
-                });
-                document.getElementById('nouveauPost').value = '';
-                soldeCrea += 50;
-                majSolde();
-            } catch (error) {
-                alert("❌ Erreur publication : " + error.message);
-            }
-        }
-
-        function chargerPublications() {
-            const q = query(collection(db, "publications"), orderBy("date", "desc"));
-            onSnapshot(q, (snapshot) => {
-                const fil = document.getElementById('filGlobal');
-                fil.innerHTML = '';
-
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const postEl = document.createElement('div');
-                    postEl.className = 'bg-white rounded-xl p-4 shadow-sm mb-3';
-                    postEl.innerHTML = `
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs">👤</div>
-                            <div>
-                                <p class="font-semibold text-sm">${data.auteur.split('@')[0]}</p>
-                                <p class="text-[10px] text-gray-500">à l'instant</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-800 mb-3">${data.texte}</p>
-                        <div class="flex gap-6 text-gray-500 text-sm">
-                            <span class="cursor-pointer hover:text-primary" onclick="aimerPost('${docSnap.id}', ${data.likes})">❤️ J'aime (${data.likes})</span>
-                            <span class="cursor-pointer hover:text-primary">💬 Commenter</span>
-                            <span class="cursor-pointer hover:text-primary">↪️ Partager</span>
-                        </div>
-                    `;
-                    fil.appendChild(postEl);
-                    soldeCrea += 1;
-                    majSolde();
-                });
-            });
-        }
-
-        window.aimerPost = async function(id, actuel) {
-            try {
-                const ref = doc(db, "publications", id);
-                await updateDoc(ref, {likes: actuel + 1});
-                soldeCrea += 5;
-                majSolde();
-            } catch (error) {
-                console.error("Erreur like :", error);
-            }
-        }
-
-        // === RETRAIT ===
-        window.ouvrirRetrait = function(type) {
-            modeRetrait = type;
-            document.getElementById('titreRetrait').innerText = `💸 Retrait par ${type}`;
-            document.getElementById('modalRetrait').style.display = 'flex';
-        }
-        window.fermerRetrait = function() {
-            document.getElementById('modalRetrait').style.display = 'none';
-            document.getElementById('montantRetrait').value = '';
-            document.getElementById('compteRetrait').value = '';
-            document.getElementById('cleAcces').value = '';
-        }
-        window.validerRetrait = function() {
-            const cle = document.getElementById('cleAcces').value.trim();
-            const montant = parseInt(document.getElementById('montantRetrait').value);
-            const compte = document.getElementById('compteRetrait').value.trim();
-
-            if(cle !== MA_CLE_SECRETE) return alert("❌ CLÉ D'ACCÈS INCORRECTE ! Accès refusé.");
-            if(!montant || montant <=0 || montant > soldeCrea) return alert("❌ Montant invalide ou insuffisant.");
-            if(!compte) return alert("❌ Entrez votre numéro ou compte.");
-
-            soldeCrea -= montant;
-            majSolde();
-            fermerRetrait();
-
-            alert(`✅ RETRAIT RÉUSSI !\n\n💸 ${montant} Ar\n📨 Vers : ${modeRetrait}\n📇 Compte : ${compte}\n\nReçu sous 24h ! 🚀`);
-        }
-
-        function majSolde() {
-            document.getElementById('soldeCrea').innerText = soldeCrea.toLocaleString() + " Ar";
-        }
-
-        window.deconnexion = async function() {
-            try {
-                await signOut(auth);
-                location.reload();
-            } catch (error) {
-                alert("❌ Erreur déconnexion : " + error.message);
+                alert("✅ Compte créé ! Bienvenue sur DIAMINA");
+                fermerInscription();
+            } catch (e) {
+                alert("❌ Erreur : " + e.message);
             }
         }
     </script>
 
 </body>
 </html>
+
